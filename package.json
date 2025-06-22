@@ -1,0 +1,40 @@
+{
+    "name": "embed-tools",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+      "dev": "vite",
+      "dev:ai-discovery": "vite apps/ai-model-discovery",
+      "build": "vite build",
+      "build:ai-discovery": "vite build apps/ai-model-discovery",
+      "build:all": "npm run build:ai-discovery",
+      "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+      "lint:fix": "eslint . --ext js,jsx --fix",
+      "preview": "vite preview",
+      "preview:ai-discovery": "vite preview apps/ai-model-discovery",
+      "deploy": "npm run build:all && gh-pages -d dist",
+      "deploy:ai-discovery": "npm run build:ai-discovery && gh-pages -d dist",
+      "clean": "rm -rf dist node_modules/.vite",
+      "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.66",
+      "@types/react-dom": "^18.2.22",
+      "@vitejs/plugin-react": "^4.2.1",
+      "eslint": "^8.57.0",
+      "eslint-plugin-react": "^7.34.1",
+      "eslint-plugin-react-hooks": "^4.6.0",
+      "eslint-plugin-react-refresh": "^0.4.6",
+      "gh-pages": "^6.1.1",
+      "tailwindcss": "^4.0.0",
+      "terser": "^5.29.2",
+      "typescript": "^5.4.2",
+      "vite": "^5.2.0"
+    }
+  }
+  

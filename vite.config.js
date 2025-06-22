@@ -1,0 +1,54 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  base: '/embed-tools/',
+  build: {
+    rollupOptions: {
+      input: {
+        'ai-model-discovery': resolve(__dirname, 'apps/ai-model-discovery/index.html'),
+      },
+      output: {
+        // Ensure unique chunk names for multiple apps
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
+          return `assets/${facadeModuleId}-[hash].js`;
+        },
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
+      }
+    },
+    // Optimize for embedding
+    target: 'es2015',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  // Optimize for GitHub Pages
+  server: {
+    port: 3000,
+    open: true,
+  },
+  preview: {
+    port: 4173,
+    open: true,
+  },
+  // CSS optimization for Tailwind v4
+  css: {
+    devSourcemap: true,
+  },
+  // Root directory configuration for multi-app setup
+  root: process.cwd(),
+});
