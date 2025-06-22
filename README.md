@@ -49,7 +49,7 @@ A comprehensive tool to help users find the perfect AI model for their use case.
 - Pricing and performance metrics
 - Responsive design with Tailwind v4.0.0
 
-**URL:** `https://yourusername.github.io/embed-tools/ai-model-discovery/`
+**URL:** `https://nilead.github.io/embed-tools/ai-model-discovery/`
 
 ## 🛠️ Project Structure
 
@@ -61,10 +61,12 @@ embed-tools/
 │       │   ├── App.jsx             # Main app component
 │       │   ├── main.jsx            # Entry point
 │       │   └── index.css           # Tailwind v4.0.0 styles
-│       ├── public/
-│       │   └── index.html          # HTML template
-│       └── package.json            # App-specific config
-├── vite.config.js                  # Vite configuration
+│       ├── index.html              # HTML template
+│       ├── main.jsx                # Entry point
+│       └── vite.config.js          # App-specific Vite config
+├── scripts/
+│   └── create-app.js               # App generator script
+├── vite.config.js                  # Root Vite configuration
 ├── tailwind.config.js              # Tailwind CSS v4.0.0 config
 ├── package.json                    # Root package.json
 └── README.md                       # This file
@@ -125,35 +127,41 @@ Updated to use the stable Tailwind CSS v4.0.0 with:
 }
 ```
 
-## 📦 Adding New Apps
+## 📦 Creating New Apps
 
+### Using the App Generator (Recommended)
+```bash
+# Create a new app
+npm run create-app my-new-app
+
+# The script will:
+# ✅ Create the app directory structure
+# ✅ Generate all necessary files with correct naming
+# ✅ Set up Vite config with proper paths
+# ✅ Create a basic React component
+# ✅ Add Tailwind CSS v4.0.0 styles
+# ✅ Generate app-specific README
+```
+
+### Manual Creation
 1. Create a new directory in `apps/`:
 ```bash
 mkdir apps/your-new-app
 ```
 
-2. Copy the basic structure:
-```bash
-cp -r apps/_template/* apps/your-new-app/
-```
+2. Copy the basic structure from an existing app and update:
+   - `index.html` - Update title, meta tags, and app-specific naming
+   - `src/App.jsx` - Replace with your app logic
+   - `src/index.css` - Customize Tailwind v4.0.0 styles if needed
+   - `vite.config.js` - Update app name in base and outDir paths
 
-3. Update `vite.config.js` to include the new app:
-```javascript
-rollupOptions: {
-  input: {
-    'ai-model-discovery': resolve(__dirname, 'apps/ai-model-discovery/index.html'),
-    'your-new-app': resolve(__dirname, 'apps/your-new-app/index.html'),
-  },
-  // ...
-}
-```
-
-4. Add build scripts to `package.json`:
+3. Add build scripts to `package.json`:
 ```json
 {
   "scripts": {
     "dev:your-new-app": "vite apps/your-new-app",
-    "build:your-new-app": "vite build apps/your-new-app"
+    "build:your-new-app": "vite build apps/your-new-app",
+    "preview:your-new-app": "vite preview apps/your-new-app"
   }
 }
 ```
@@ -163,7 +171,7 @@ rollupOptions: {
 ### Iframe Embedding
 ```html
 <iframe 
-  src="https://yourusername.github.io/embed-tools/ai-model-discovery/"
+  src="https://nilead.github.io/embed-tools/ai-model-discovery/"
   width="100%" 
   height="600px" 
   frameborder="0"
@@ -177,7 +185,7 @@ rollupOptions: {
 <script>
   // Load the app dynamically
   const script = document.createElement('script');
-  script.src = 'https://yourusername.github.io/embed-tools/ai-model-discovery/assets/main.js';
+  script.src = 'https://nilead.github.io/embed-tools/ai-model-discovery/assets/main.js';
   document.head.appendChild(script);
 </script>
 ```
@@ -195,7 +203,7 @@ rollupOptions: {
    ```
 
 3. **Access your apps:**
-   - AI Model Discovery: `https://yourusername.github.io/embed-tools/ai-model-discovery/`
+   - AI Model Discovery: `https://nilead.github.io/embed-tools/ai-model-discovery/`
 
 ## 🔍 Performance Optimization
 

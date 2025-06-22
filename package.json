@@ -5,24 +5,26 @@
     "type": "module",
     "scripts": {
       "dev": "vite",
-      "dev:ai-discovery": "vite apps/ai-model-discovery",
+      "dev:ai-model-discovery": "vite apps/ai-model-discovery",
       "build": "vite build",
-      "build:ai-discovery": "vite build apps/ai-model-discovery",
-      "build:all": "npm run build:ai-discovery",
+      "build:ai-model-discovery": "vite build apps/ai-model-discovery",
+      "build:all": "npm run build:ai-model-discovery",
       "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
       "lint:fix": "eslint . --ext js,jsx --fix",
       "preview": "vite preview",
-      "preview:ai-discovery": "vite preview apps/ai-model-discovery",
+      "preview:ai-model-discovery": "vite preview apps/ai-model-discovery",
       "deploy": "npm run build:all && gh-pages -d dist",
-      "deploy:ai-discovery": "npm run build:ai-discovery && gh-pages -d dist",
+      "deploy:ai-model-discovery": "npm run build:ai-model-discovery && gh-pages -d dist",
       "clean": "rm -rf dist node_modules/.vite",
-      "type-check": "tsc --noEmit"
+      "type-check": "tsc --noEmit",
+      "create-app": "node scripts/create-app.js"
     },
     "dependencies": {
       "react": "^18.2.0",
       "react-dom": "^18.2.0"
     },
     "devDependencies": {
+      "@tailwindcss/vite": "^4.0.0",
       "@types/react": "^18.2.66",
       "@types/react-dom": "^18.2.22",
       "@vitejs/plugin-react": "^4.2.1",
