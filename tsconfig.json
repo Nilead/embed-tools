@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/website-cost-estimator/src/*", "./apps/ai-model-discovery/src/*"]
+    },
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "noEmit": true
+  },
+  "include": ["apps/website-cost-estimator/src", "apps/ai-model-discovery/src"],
+  "exclude": ["node_modules"]
+} 

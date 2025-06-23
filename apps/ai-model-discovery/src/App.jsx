@@ -1,111 +1,188 @@
-import React, { useReducer, useEffect } from 'react';
-import { quizSteps } from './data/quizConfig';
-import { useModelRecommender } from './hooks/useModelRecommender';
+import { useReducer } from 'react';
+import { quizConfig } from './data/quizConfig';
+import { aiModels } from './data/aiModels';
 import QuestionStep from './components/QuestionStep';
 import ResultsStep from './components/ResultsStep';
 import TokensInfo from './components/TokensInfo';
+import { Card, CardContent } from '@embed-tools/components';
+import { Button } from '@embed-tools/components';
 
 const initialState = {
-  currentStep: 0, // 0 is welcome, 1-3 are questions, 4 is results
+  currentStep: 0,
   answers: {},
+  showTokensInfo: false,
 };
 
-function quizReducer(state, action) {
+function reducer(state, action) {
   switch (action.type) {
-    case 'ANSWER':
-      // Automatically advance step after answering
-      const nextStep = state.currentStep >= quizSteps.length ? state.currentStep + 1 : state.currentStep + 1;
+    case 'ANSWER_QUESTION':
       return {
         ...state,
-        answers: { ...state.answers, [action.key]: action.value },
-        currentStep: nextStep
+        answers: {
+          ...state.answers,
+          [action.payload.questionId]: action.payload.answer,
+        },
       };
-    case 'SET_STEP':
-        return { ...state, currentStep: action.payload };
+    case 'NEXT_STEP':
+      return { ...state, currentStep: state.currentStep + 1 };
+    case 'PREVIOUS_STEP':
+      return { ...state, currentStep: Math.max(0, state.currentStep - 1) };
     case 'RESTART':
-      return { ...initialState, currentStep: 1 }; // Go to first question on restart
+      return initialState;
+    case 'TOGGLE_TOKENS_INFO':
+      return { ...state, showTokensInfo: !state.showTokensInfo };
     default:
-      return state;
+      throw new Error('Unknown action type');
   }
 }
 
-const App = () => {
-  const [state, dispatch] = useReducer(quizReducer, initialState);
-  const { currentStep, answers } = state;
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { currentStep, answers, showTokensInfo } = state;
 
-  const recommendedModels = useModelRecommender(currentStep === quizSteps.length + 1 ? answers : null);
+  const isQuizFinished = currentStep >= quizConfig.questions.length - 1;
 
-  const handleAnswer = (key, value) => {
-    dispatch({ type: 'ANSWER', key, value });
+  // Calculate recommended models based on answers
+  const getRecommendedModels = (answers) => {
+    if (!answers.primaryTask) {
+      return [];
+    }
+
+    const filtered = aiModels.filter(model => {
+      // Check if model supports the primary task
+      const supportsTask = model.tags.task.includes(answers.primaryTask);
+      
+      // Check priority match
+      const priorityMatch = answers.keyPriority ? 
+        model.tags.priority.includes(answers.keyPriority) : true;
+      
+      // Check volume control
+      const volumeMatch = answers.volumeControl ? 
+        (answers.volumeControl === 'self-hosting' ? 
+          model.tags.features?.includes('self-hosting') : 
+          answers.volumeControl === 'high-volume' ? 
+            model.tags.special?.includes('high-volume') : true) : true;
+
+      return supportsTask && priorityMatch && volumeMatch;
+    }).sort((a, b) => {
+      // Sort by quality (premium first) and then by input cost
+      if (a.tags.quality === 'premium' && b.tags.quality !== 'premium') return -1;
+      if (b.tags.quality === 'premium' && a.tags.quality !== 'premium') return 1;
+      return a.pricing.inputCost - b.pricing.inputCost;
+    });
+
+    return filtered;
   };
-  
-  const handleBack = () => {
-      if (currentStep > 0) {
-          dispatch({type: 'SET_STEP', payload: currentStep -1});
-      }
-  }
 
-  const renderStep = () => {
-      // Welcome Screen
-    if (currentStep === 0) {
-      return (
-        <div className="text-center">
-            <h2 className="text-3xl font-bold text-blue-800 mb-6">Discover the Best AI Model for Your Needs</h2>
-            <p className="text-lg text-gray-700 mb-8">Answer a few questions to find the perfect AI model.</p>
-            <button
-                onClick={() => dispatch({type: 'SET_STEP', payload: 1})}
-                className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300"
-            >
-                Start Discovery
-            </button>
-        </div>
-      );
+  const recommendedModels = getRecommendedModels(answers) || [];
+
+  // Generate breadcrumb text from answers
+  const getBreadcrumbText = () => {
+    const criteria = [];
+    
+    if (answers.primaryTask) {
+      const taskLabels = {
+        'text-generation': 'Text Generation',
+        'code-generation': 'Code Generation', 
+        'image-generation': 'Image Generation',
+        'translation': 'Translation',
+        'summarization': 'Summarization',
+        'question-answering': 'Question Answering'
+      };
+      criteria.push(taskLabels[answers.primaryTask] || answers.primaryTask);
     }
     
-    // Question screens
-    if(currentStep > 0 && currentStep <= quizSteps.length) {
-        const stepConfig = quizSteps.find(step => step.step === currentStep);
-        return (
-            <QuestionStep 
-                stepConfig={stepConfig}
-                currentAnswer={answers[stepConfig.key]}
-                onAnswer={handleAnswer}
-                onBack={handleBack}
-            />
-        )
+    if (answers.keyPriority) {
+      const priorityLabels = {
+        'cost': 'Cost-Effective',
+        'speed': 'High Speed',
+        'quality': 'High Quality'
+      };
+      criteria.push(priorityLabels[answers.keyPriority] || answers.keyPriority);
     }
-
-    // Results screen
-    if(currentStep === quizSteps.length + 1) {
-        return (
-            <ResultsStep 
-                recommendedModels={recommendedModels}
-                onBack={handleBack}
-                onRestart={() => dispatch({type: 'RESTART'})}
-            />
-        )
+    
+    if (answers.volumeControl) {
+      const volumeLabels = {
+        'self-hosting': 'Self-Hosting',
+        'high-volume': 'High Volume',
+        'low-volume': 'Low Volume'
+      };
+      criteria.push(volumeLabels[answers.volumeControl] || answers.volumeControl);
     }
-
-    return null; // Should not happen
+    
+    return criteria.length > 0 ? criteria.join(' • ') : null;
   };
 
+  const breadcrumbText = getBreadcrumbText();
+
   return (
-    <div className="font-sans antialiased bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen text-gray-800 p-4 sm:p-8">
-      <header className="mb-10 text-center">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-blue-800">AI Model Discovery</h1>
-      </header>
-      
-      <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl mb-12 border border-blue-100">
-        {renderStep()}
-      </section>
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-4xl mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-primary">AI Model Discovery Tool</h1>
+          <p className="text-muted-foreground mt-2">
+            Find the perfect AI model for your needs by answering a few simple questions.
+          </p>
+          <Button 
+            variant="outline" 
+            onClick={() => dispatch({ type: 'TOGGLE_TOKENS_INFO' })}
+            className="mt-4"
+          >
+            What are tokens?
+          </Button>
+        </header>
 
-      <TokensInfo />
+        {/* Breadcrumb showing selected criteria */}
+        {breadcrumbText && !showTokensInfo && (
+          <div className="mb-6 p-4 bg-muted/50 rounded-lg border">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">Selected criteria:</span>
+              <span className="text-sm text-foreground">{breadcrumbText}</span>
+            </div>
+          </div>
+        )}
 
-      <footer className="mt-12 text-center text-gray-500 text-sm">
-        <p>&copy; 2025 AI Model Discovery. All rights reserved.</p>
-      </footer>
+        <Card className="overflow-hidden">
+          <CardContent className="p-8">
+            {showTokensInfo ? (
+              <TokensInfo onBack={() => dispatch({ type: 'TOGGLE_TOKENS_INFO' })} />
+            ) : isQuizFinished ? (
+              <ResultsStep 
+                recommendedModels={recommendedModels}
+                onBack={() => dispatch({ type: 'PREVIOUS_STEP' })}
+                onRestart={() => dispatch({ type: 'RESTART' })}
+              />
+            ) : (
+              <QuestionStep
+                stepConfig={quizConfig.questions[currentStep]}
+                currentAnswer={answers[quizConfig.questions[currentStep].id]}
+                onAnswer={(questionId, answer) => {
+                  dispatch({ type: 'ANSWER_QUESTION', payload: { questionId, answer } });
+                  // Auto-advance to next step after a short delay
+                  setTimeout(() => {
+                    if (currentStep < quizConfig.questions.length - 1) {
+                      dispatch({ type: 'NEXT_STEP' });
+                    }
+                  }, 500);
+                }}
+                onBack={() => dispatch({ type: 'PREVIOUS_STEP' })}
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        <footer className="mt-6 text-center">
+          {(!isQuizFinished && !showTokensInfo) && (
+            <div className="flex justify-center items-center">
+              <p className="text-sm text-muted-foreground">
+                Step {currentStep + 1} of {quizConfig.questions.length}
+              </p>
+            </div>
+          )}
+        </footer>
+      </div>
     </div>
   );
-};
+}
 
 export default App;

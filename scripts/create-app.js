@@ -99,7 +99,7 @@ const templates = {
   'main.jsx': `import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './src/App.jsx';
-import './src/index.css';
+import './src/App.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -110,9 +110,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   'vite.config.js': `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   base: '/embed-tools/${appName}/',
   build: {
     outDir: '../../dist/${appName}',
@@ -179,24 +180,44 @@ const App = () => {
 
 export default App;`,
 
-  'src/index.css': `@import "tailwindcss";
+  'src/App.css': `/**
+ * Your Main CSS file for Tailwind CSS v4
+ */
 
-/* Custom global styles */
+/* 1. Import any webfonts at the very top (e.g., from Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+/* 2. Import the Tailwind framework */
+@import "tailwindcss";
+
+/* 3. Define all your theme customizations using @theme */
+@theme {
+  /*
+   * CORRECT NAMING CONVENTION:
+   * Use '--font-family-{your-name}' to create 'font-{your-name}'
+   */
+  --font-family-inter: 'Inter', sans-serif;
+
+  /* Spacing */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+
+  /* Colors (as space-separated RGB) */
+  --color-primary-500: 59 130 246;
+  --color-primary-600: 37 99 235;
+  --color-primary-400: 96 165 250;
+  /* Add other colors/shades as needed */
+}
+
+/* 4. Add your custom global, component, and utility styles */
 @layer base {
   body {
-    font-family: 'Inter', sans-serif;
-  }
-  
-  /* CSS custom properties for theming */
-  :root {
-    --color-primary: 59 130 246;
-    --color-primary-light: 96 165 250;
-    --color-primary-dark: 37 99 235;
+    /* This will now work correctly */
+    @apply font-family-inter;
   }
 }
 
 @layer components {
-  /* Custom component styles */
   .btn-primary {
     @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
@@ -215,21 +236,12 @@ export default App;`,
 }
 
 @layer utilities {
-  /* Custom utility classes */
   .text-gradient {
     @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
   }
   
   .glass-effect {
     @apply backdrop-blur-sm bg-white/80 border border-white/20;
-  }
-  
-  .animate-fade-in {
-    @apply animate-fade-in;
-  }
-  
-  .animate-slide-up {
-    @apply animate-slide-up;
   }
 }`,
 

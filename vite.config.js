@@ -11,6 +11,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         'ai-model-discovery': resolve(__dirname, 'apps/ai-model-discovery/index.html'),
+        'website-cost-estimator': resolve(__dirname, 'apps/website-cost-estimator/index.html'),
       },
       output: {
         // Ensure unique chunk names for multiple apps
@@ -35,6 +36,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      '@embed-tools/components': resolve(__dirname, './packages/components/src'),
     },
   },
   // Optimize for GitHub Pages

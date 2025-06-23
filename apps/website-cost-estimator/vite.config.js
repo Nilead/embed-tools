@@ -1,23 +1,23 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import { resolve } from 'path';
+import path from "path";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/embed-tools/ai-model-discovery/',
+  base: '/embed-tools/website-cost-estimator/',
   build: {
-    outDir: '../../dist/ai-model-discovery',
+    outDir: '../../dist/website-cost-estimator',
     rollupOptions: {
-      // Ensure unique chunk names
       output: {
-        chunkFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
+          return `assets/${facadeModuleId}-[hash].js`;
+        },
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
-    // Optimize for production
     target: 'es2015',
     minify: 'terser',
     terserOptions: {
@@ -29,20 +29,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
-      '@embed-tools/components': resolve(__dirname, '../../packages/components/src'),
+      "@": path.resolve(__dirname, "./src"),
+      "@embed-tools/components": path.resolve(__dirname, "../../packages/components/src"),
     },
   },
-  server: {
-    port: 3001,
-    open: true,
-  },
-  preview: {
-    port: 4173,
-    open: true,
-  },
-  // CSS optimization for Tailwind v4
   css: {
     devSourcemap: true,
   },
-}); 
+});

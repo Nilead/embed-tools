@@ -1,8 +1,7 @@
-// src/components/TokensInfo.js
 import React, { useState } from 'react';
+import { Button } from '@embed-tools/components';
 
-const TokensInfo = () => {
-    const [showTokensInfo, setShowTokensInfo] = useState(false);
+const TokensInfo = ({ onBack }) => {
     const [sampleText, setSampleText] = useState('');
     const [estimatedTokens, setEstimatedTokens] = useState(0);
 
@@ -33,22 +32,21 @@ const TokensInfo = () => {
     };
 
     return (
-        <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl mb-12 border border-blue-100">
-            <h2
-                className="text-3xl font-bold text-blue-700 mb-6 flex items-center justify-between cursor-pointer"
-                onClick={() => setShowTokensInfo(!showTokensInfo)}
-            >
-                What are "Tokens"?
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`h-7 w-7 text-blue-500 transform transition-transform duration-300 ${showTokensInfo ? 'rotate-180' : ''}`}
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        <div>
+            <div className="text-center mb-6">
+                <Button 
+                    variant="outline" 
+                    onClick={onBack}
+                    className="mb-4"
                 >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </h2>
-            {showTokensInfo && (
-                <div className="text-gray-700 leading-relaxed space-y-8 pt-4 border-t border-gray-100">
+                    ← Back to Quiz
+                </Button>
+            </div>
+            <section className="bg-card p-6 sm:p-8 rounded-2xl shadow-2xl mb-12 border border-border">
+                <h2 className="text-3xl font-bold text-primary mb-6">
+                    What are "Tokens"?
+                </h2>
+                <div className="text-foreground leading-relaxed space-y-8 pt-4 border-t border-border">
                     <div className="grid md:grid-cols-2 gap-8">
                         <div>
                             <p className="mb-4">
@@ -82,20 +80,20 @@ const TokensInfo = () => {
                     </div>
 
                     {/* Token Estimator */}
-                    <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
-                        <h3 className="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                    <div className="bg-accent p-6 rounded-xl border border-border">
+                        <h3 className="text-xl font-semibold text-primary mb-4 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                             Token Estimator
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4">
+                        <p className="text-sm text-muted-foreground mb-4">
                             Paste your text below to get an estimate of how many tokens it might use. This is a rough approximation - actual tokenization varies by model.
                         </p>
 
                         <div className="space-y-4">
                             <div>
-                                <label htmlFor="sampleText" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="sampleText" className="block text-sm font-medium text-foreground mb-2">
                                     Your Text:
                                 </label>
                                 <textarea
@@ -103,34 +101,34 @@ const TokensInfo = () => {
                                     value={sampleText}
                                     onChange={handleTextChange}
                                     placeholder="Paste your text here to estimate tokens..."
-                                    className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                    className="w-full h-32 p-3 border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-ring resize-none bg-background text-foreground"
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <div className="text-2xl font-bold text-blue-600">{estimatedTokens}</div>
-                                    <div className="text-sm text-gray-600">Estimated Tokens</div>
+                                <div className="bg-card p-4 rounded-lg border border-border">
+                                    <div className="text-2xl font-bold text-primary">{estimatedTokens}</div>
+                                    <div className="text-sm text-muted-foreground">Estimated Tokens</div>
                                 </div>
-                                <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <div className="text-2xl font-bold text-green-600">{sampleText.trim().split(/\s+/).filter(word => word.length > 0).length}</div>
-                                    <div className="text-sm text-gray-600">Words</div>
+                                <div className="bg-card p-4 rounded-lg border border-border">
+                                    <div className="text-2xl font-bold text-secondary-foreground">{sampleText.trim().split(/\s+/).filter(word => word.length > 0).length}</div>
+                                    <div className="text-sm text-muted-foreground">Words</div>
                                 </div>
-                                <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                    <div className="text-2xl font-bold text-purple-600">{sampleText.length}</div>
-                                    <div className="text-sm text-gray-600">Characters</div>
+                                <div className="bg-card p-4 rounded-lg border border-border">
+                                    <div className="text-2xl font-bold text-accent-foreground">{sampleText.length}</div>
+                                    <div className="text-sm text-muted-foreground">Characters</div>
                                 </div>
                             </div>
 
-                            <div className="text-xs text-gray-500 bg-white p-3 rounded border">
+                            <div className="text-xs text-muted-foreground bg-card p-3 rounded border border-border">
                                 <strong>Note:</strong> This is a simplified estimation based on a common rule of thumb where <strong>1 word ≈ 1.33 tokens</strong> (or 1 token ≈ 0.75 words). Actual tokenization depends on the specific AI model, language, and text complexity. For precise counts, use the model's official tokenizer.
                             </div>
                         </div>
                     </div>
                 </div>
-            )}
-        </section>
+            </section>
+        </div>
     );
 };
 
-export default TokensInfo;
+export default TokensInfo; 
