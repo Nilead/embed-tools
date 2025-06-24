@@ -13,7 +13,9 @@ export default defineConfig({
         'ai-model-discovery': resolve(__dirname, 'apps/ai-model-discovery/index.html'),
         'website-cost-estimator': resolve(__dirname, 'apps/website-cost-estimator/index.html'),
         'website-launch-checklist': resolve(__dirname, 'apps/website-launch-checklist/index.html'),
-      },
+      
+        'analytics-tool-discovery': resolve(__dirname, 'apps/analytics-tool-discovery/index.html'),
+        'website-platform-discovery': resolve(__dirname, 'apps/website-platform-discovery/index.html'),},
       output: {
         // Ensure unique chunk names for multiple apps
         chunkFileNames: (chunkInfo) => {

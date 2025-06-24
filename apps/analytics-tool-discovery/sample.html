@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Tool Selector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        #question-container {
+            display: grid;
+        }
+        .question-card-wrapper {
+            grid-column: 1 / -1;
+            grid-row: 1 / -1;
+            transition: opacity 0.3s ease-in-out;
+            will-change: opacity;
+        }
+        .option-label {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-label:hover {
+            background-color: #f0f4ff; /* A light blue hover */
+        }
+        input[type="radio"]:checked + .option-label {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+            box-shadow: 0 0 0 2px #4f46e5;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .result-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .top-recommendation {
+            border: 2px solid #10b981; /* Green border for top pick */
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05);
+        }
+        .breadcrumb-pill {
+            transition: all 0.2s ease-in-out;
+        }
+        .breadcrumb-pill:hover {
+            background-color: #d1d5db;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <div id="app-container" class="w-full max-w-2xl mx-auto">
+        
+        <!-- Questionnaire Screen -->
+        <div id="questionnaire-screen">
+            <div class="bg-white rounded-xl shadow-lg p-8 relative min-h-[500px] flex flex-col">
+                <div id="breadcrumbs-container" class="flex flex-wrap gap-2 mb-6">
+                    <!-- Breadcrumbs will be injected here -->
+                </div>
+                <div id="question-container" class="flex-grow">
+                    <!-- Questions will be injected here -->
+                </div>
+            </div>
+            <div id="navigation-controls" class="mt-6 flex justify-between items-center">
+                <button id="back-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300">Back</button>
+                <div id="progress-indicator" class="text-sm text-gray-500"></div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-gray-900">Your Recommendations</h2>
+                <p class="text-lg text-gray-600 mt-2">Based on your answers, here are the best tools for you.</p>
+            </div>
+            <div id="results-summary-container" class="bg-white rounded-lg shadow-sm p-4 mb-8">
+                <!-- Final selections summary will be injected here -->
+            </div>
+            <div id="results-container" class="space-y-6">
+                <!-- Results will be injected here -->
+            </div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="bg-gray-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-md hover:bg-gray-800">
+                    Start Over
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const tools = [
+                {
+                    name: "Google Analytics 4",
+                    logo: "�",
+                    description: "The industry standard, offering powerful, comprehensive, and free analytics for businesses of all sizes.",
+                    pros: ["Extremely feature-rich", "Free for most users", "Integrates with Google's ecosystem"],
+                    cons: ["Steep learning curve", "Data privacy concerns", "Data sampling on high-traffic sites"],
+                    url: "https://marketingplatform.google.com/about/analytics/",
+                    tags: { size: ["personal", "small", "medium", "enterprise"], goal: ["general", "ecommerce"], budget: ["free", "premium"], expertise: ["beginner", "intermediate", "expert"], privacy: ["low"] }
+                },
+                {
+                    name: "Plausible Analytics",
+                    logo: "🕊️",
+                    description: "A simple, lightweight, and open-source analytics tool that prioritizes privacy and website speed.",
+                    pros: ["Privacy-first (GDPR/CCPA compliant)", "Very lightweight script", "Simple, clean interface"],
+                    cons: ["Fewer advanced features", "No free tier (paid only)"],
+                    url: "https://plausible.io/",
+                    tags: { size: ["personal", "small", "medium"], goal: ["general", "privacy"], budget: ["low-cost"], expertise: ["beginner", "intermediate"], privacy: ["high"] }
+                },
+                {
+                    name: "Fathom Analytics",
+                    logo: "🌊",
+                    description: "A beautiful, easy-to-use, and privacy-focused alternative to Google Analytics with a simple, single-page dashboard.",
+                    pros: ["Excellent for privacy", "Incredibly simple to use", "No cookie banner needed"],
+                    cons: ["Limited features", "No free tier (paid only)"],
+                    url: "https://usefathom.com/",
+                    tags: { size: ["personal", "small"], goal: ["general", "privacy"], budget: ["low-cost"], expertise: ["beginner"], privacy: ["high"] }
+                },
+                {
+                    name: "Matomo",
+                    logo: "📈",
+                    description: "A powerful, privacy-focused platform that gives you 100% data ownership with self-hosting or cloud options.",
+                    pros: ["Complete data ownership & control", "No data sampling", "Feature-rich (heatmaps, A/B testing)"],
+                    cons: ["Self-hosting requires technical skill", "Cloud version can be pricey"],
+                    url: "https://matomo.org/",
+                    tags: { size: ["small", "medium", "enterprise"], goal: ["general", "ecommerce", "privacy"], budget: ["free", "low-cost", "premium"], expertise: ["intermediate", "expert"], privacy: ["high"] }
+                },
+                {
+                    name: "Hotjar",
+                    logo: "🔥",
+                    description: "Visualizes user behavior with heatmaps and session recordings to help you understand the 'why' behind their actions.",
+                    pros: ["Excellent for UX insights", "Provides heatmaps & session recordings", "Gathers qualitative feedback"],
+                    cons: ["Not a full quantitative analytics suite", "Can impact site performance"],
+                    url: "https://www.hotjar.com/",
+                    tags: { size: ["small", "medium", "enterprise"], goal: ["ux"], budget: ["free", "low-cost", "premium"], expertise: ["beginner", "intermediate"], privacy: ["medium"] }
+                },
+                {
+                    name: "Mixpanel",
+                    logo: "🎛️",
+                    description: "A powerful product analytics tool for tracking user interactions, funnels, and retention in web and mobile apps.",
+                    pros: ["Superior event-based tracking", "Advanced funnel & retention analysis", "Great for product teams"],
+                    cons: ["Can be expensive", "Steeper learning curve for non-product folks"],
+                    url: "https://mixpanel.com/",
+                    tags: { size: ["small", "medium", "enterprise"], goal: ["product", "ecommerce"], budget: ["free", "premium"], expertise: ["intermediate", "expert"], privacy: ["low"] }
+                },
+                {
+                    name: "Heap",
+                    logo: " ऑटो",
+                    description: "Automatically captures every user interaction, allowing for retroactive analysis without manual event setup.",
+                    pros: ["Automatic event tracking", "Analyze historical data from day one", "Powerful for product discovery"],
+                    cons: ["High cost", "Can generate overwhelming data", "Learning curve"],
+                    url: "https://heap.io/",
+                    tags: { size: ["medium", "enterprise"], goal: ["product", "ux"], budget: ["premium"], expertise: ["intermediate", "expert"], privacy: ["low"] }
+                },
+                {
+                    name: "Adobe Analytics",
+                    logo: "🅰️",
+                    description: "An enterprise-grade solution for large-scale, omnichannel data analysis and deep customer journey insights.",
+                    pros: ["Extremely powerful and customizable", "Omnichannel data collection", "Great for enterprise teams"],
+                    cons: ["Very high cost", "Highly complex setup and use", "Locks you into Adobe ecosystem"],
+                    url: "https://business.adobe.com/products/analytics/adobe-analytics.html",
+                    tags: { size: ["enterprise"], goal: ["general", "ecommerce", "product"], budget: ["premium"], expertise: ["expert"], privacy: ["medium"] }
+                }
+            ];
+
+            const questions = [
+                { key: "size", text: "What's the size of your business or project?", options: [{ value: "personal", text: "Personal / Hobby" }, { value: "small", text: "Small Business (1-50)" }, { value: "medium", text: "Medium Business (51-500)" }, { value: "enterprise", text: "Enterprise (500+)" }] },
+                { key: "goal", text: "What is your primary goal?", options: [{ value: "general", text: "General Traffic Analysis" }, { value: "ux", text: "Understanding User Behavior" }, { value: "product", text: "Analyzing Product/App Usage" }, { value: "ecommerce", text: "E-commerce & Conversions" }, { value: "privacy", text: "Privacy & Data Ownership" }] },
+                { key: "budget", text: "What is your monthly budget?", options: [{ value: "free", text: "Free" }, { value: "low-cost", text: "Low-cost (<$50/mo)" }, { value: "premium", text: "Premium / Flexible" }] },
+                { key: "expertise", text: "What is your technical comfort level?", options: [{ value: "beginner", text: "Beginner (Simple)" }, { value: "intermediate", text: "Intermediate (Can handle setup)" }, { value: "expert", text: "Expert (Comfortable with code)" }] },
+                { key: "privacy", text: "How important is user privacy?", options: [{ value: "high", text: "Very Important (Top priority)" }, { value: "medium", text: "Somewhat Important" }, { value: "low", text: "Not a primary concern" }] },
+            ];
+
+            // --- STATE ---
+            let currentQuestionIndex = 0;
+            const userAnswers = {};
+
+            // --- DOM ELEMENTS ---
+            const questionnaireScreen = document.getElementById('questionnaire-screen');
+            const resultsScreen = document.getElementById('results-screen');
+            const questionContainer = document.getElementById('question-container');
+            const backBtn = document.getElementById('back-btn');
+            const progressIndicator = document.getElementById('progress-indicator');
+            const resultsContainer = document.getElementById('results-container');
+            const resultsSummaryContainer = document.getElementById('results-summary-container');
+            const breadcrumbsContainer = document.getElementById('breadcrumbs-container');
+            
+            // --- EVENT LISTENERS ---
+            document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+            backBtn.addEventListener('click', handleBack);
+            breadcrumbsContainer.addEventListener('click', handleBreadcrumbClick);
+
+            // --- FUNCTIONS ---
+            
+            function init() {
+                questionnaireScreen.classList.remove('hidden');
+                resultsScreen.classList.add('hidden');
+                currentQuestionIndex = 0;
+                Object.keys(userAnswers).forEach(key => delete userAnswers[key]);
+                displayQuestion();
+            }
+
+            function restartQuiz() {
+                init();
+            }
+
+            function displayQuestion() {
+                const question = questions[currentQuestionIndex];
+                
+                const showNewCard = () => {
+                    const card = document.createElement('div');
+                    card.className = 'question-card-wrapper';
+                    card.style.opacity = '0';
+                    
+                    const optionsHtml = question.options.map((opt, index) => `
+                        <div>
+                            <input type="radio" name="${question.key}" id="${question.key}-${index}" value="${opt.value}" class="hidden">
+                            <label for="${question.key}-${index}" class="option-label block w-full text-left p-4 border-2 border-gray-200 rounded-lg cursor-pointer text-gray-700 font-medium">
+                                ${opt.text}
+                            </label>
+                        </div>
+                    `).join('');
+
+                    card.innerHTML = `
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">${question.text}</h2>
+                        <div class="space-y-4">${optionsHtml}</div>
+                    `;
+                    
+                    questionContainer.innerHTML = ''; // Clear container before adding new card
+                    questionContainer.appendChild(card);
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 10);
+                    
+                    card.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.addEventListener('change', handleOptionSelect);
+                        if (userAnswers[question.key] === radio.value) {
+                            radio.checked = true;
+                        }
+                    });
+
+                    updateNavigation();
+                    updateBreadcrumbs();
+                };
+                
+                const existingCard = questionContainer.querySelector('.question-card-wrapper');
+                if (existingCard) {
+                    existingCard.style.opacity = '0';
+                    existingCard.addEventListener('transitionend', showNewCard, { once: true });
+                } else {
+                    showNewCard();
+                }
+            }
+            
+            function handleOptionSelect(event) {
+                const questionKey = questions[currentQuestionIndex].key;
+                userAnswers[questionKey] = event.target.value;
+
+                setTimeout(() => {
+                    if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        displayQuestion();
+                    } else {
+                        calculateResults();
+                    }
+                }, 300); // Short delay to show selection
+            }
+
+            function handleBack() {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    displayQuestion();
+                }
+            }
+            
+            function handleBreadcrumbClick(event) {
+                const pill = event.target.closest('.breadcrumb-pill');
+                if (pill && pill.dataset.index) {
+                    const index = parseInt(pill.dataset.index, 10);
+                    currentQuestionIndex = index;
+                    // Clear subsequent answers
+                    for (let i = index; i < questions.length; i++) {
+                        delete userAnswers[questions[i].key];
+                    }
+                    displayQuestion();
+                }
+            }
+
+            function updateNavigation() {
+                backBtn.style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+                progressIndicator.textContent = `Step ${currentQuestionIndex + 1} of ${questions.length}`;
+            }
+
+            function updateBreadcrumbs() {
+                breadcrumbsContainer.innerHTML = '';
+                for (let i = 0; i < currentQuestionIndex; i++) {
+                    const question = questions[i];
+                    const answerValue = userAnswers[question.key];
+                    if (answerValue) {
+                        const answerText = question.options.find(opt => opt.value === answerValue).text;
+                        const pill = document.createElement('div');
+                        pill.className = 'breadcrumb-pill bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-1 rounded-full cursor-pointer flex items-center';
+                        pill.dataset.index = i;
+                        pill.innerHTML = `<span>${question.key.charAt(0).toUpperCase() + question.key.slice(1)}: <strong>${answerText}</strong></span>`;
+                        breadcrumbsContainer.appendChild(pill);
+                    }
+                }
+            }
+
+            function calculateResults() {
+                const scores = tools.map(tool => {
+                    let score = 0;
+                    Object.keys(userAnswers).forEach(key => {
+                        if (tool.tags[key] && tool.tags[key].includes(userAnswers[key])) {
+                            // Give higher weight to more important factors
+                            if(key === 'goal' || key === 'privacy' || key === 'size') {
+                                score += 2;
+                            } else {
+                                score += 1;
+                            }
+                        }
+                    });
+                    return { ...tool, score };
+                });
+
+                const sortedTools = scores.sort((a, b) => b.score - a.score);
+                displayResults(sortedTools.slice(0, 3));
+            }
+            
+            function displayResults(recommendedTools) {
+                questionnaireScreen.classList.add('hidden');
+                resultsScreen.classList.remove('hidden');
+                
+                // Display summary of answers
+                const summaryHtml = `
+                    <h4 class="font-bold text-lg mb-3 text-gray-800 text-center">Your Selections</h4>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        ${questions.map(q => {
+                            const answerValue = userAnswers[q.key];
+                            const answer = q.options.find(opt => opt.value === answerValue);
+                            return `<div class="bg-indigo-100 text-indigo-800 text-sm font-semibold px-3 py-1 rounded-full">${q.key.charAt(0).toUpperCase() + q.key.slice(1)}: <strong>${answer.text}</strong></div>`;
+                        }).join('')}
+                    </div>
+                `;
+                resultsSummaryContainer.innerHTML = summaryHtml;
+
+                // Display tool recommendations
+                resultsContainer.innerHTML = recommendedTools.map((tool, index) => {
+                    const isTopPick = index === 0;
+                    const prosHtml = tool.pros.map(pro => `<li class="flex items-start"><svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>${pro}</span></li>`).join('');
+                    const consHtml = tool.cons.map(con => `<li class="flex items-start"><svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg><span>${con}</span></li>`).join('');
+
+                    return `
+                        <div class="result-card bg-white rounded-xl shadow-lg p-6 ${isTopPick ? 'top-recommendation' : 'border border-gray-200'}">
+                            ${isTopPick ? '<div class="text-center mb-4"><span class="bg-green-100 text-green-800 text-sm font-bold px-4 py-1 rounded-full">Top Recommendation</span></div>' : ''}
+                            <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                                <span class="text-6xl mb-4 sm:mb-0 sm:mr-6">${tool.logo}</span>
+                                <div>
+                                    <h3 class="text-3xl font-bold text-gray-900">${tool.name}</h3>
+                                    <p class="text-gray-600 mt-1">${tool.description}</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div><h4 class="font-semibold text-lg mb-2 text-green-700">Pros</h4><ul class="space-y-2 text-gray-600">${prosHtml}</ul></div>
+                                <div><h4 class="font-semibold text-lg mb-2 text-red-700">Cons</h4><ul class="space-y-2 text-gray-600">${consHtml}</ul></div>
+                            </div>
+                            <div class="mt-6 text-center">
+                                <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="btn-primary text-white font-bold py-2 px-6 rounded-lg inline-block hover:shadow-lg">Visit Website &rarr;</a>
+                            </div>
+                        </div>`;
+                }).join('');
+            }
+
+            // Initial Load
+            init();
+        });
+    </script>
+</body>
+</html>
+�

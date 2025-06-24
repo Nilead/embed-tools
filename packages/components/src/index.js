@@ -1,6 +1,7 @@
 // packages/components/src/index.js
 
 // Export all UI components
+export { Badge } from './components/ui/badge.jsx';
 export { Button } from './components/ui/button.jsx';
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './components/ui/card.jsx';
 export { Input } from './components/ui/input.jsx';
