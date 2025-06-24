@@ -119,7 +119,7 @@ function App() {
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-4xl mx-auto">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary">AI Model Discovery Tool</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">AI Model Discovery Tool</h1>
           <p className="text-muted-foreground mt-2">
             Find the perfect AI model for your needs by answering a few simple questions.
           </p>

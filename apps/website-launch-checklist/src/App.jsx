@@ -31,7 +31,7 @@ export default function App() {
         <div className="min-h-screen bg-background text-foreground">
             <div className="container mx-auto p-4 md:p-8">
                 <header className="text-center mb-8 md:mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold text-primary">Website Launch Action Plan</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Website Launch Action Plan</h1>
                     <p className="text-lg text-muted-foreground mt-2">Your interactive guide to a successful website launch.</p>
                 </header>
 
