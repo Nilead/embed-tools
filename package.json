@@ -12,7 +12,8 @@
         "lint:fix": "eslint . --ext js,jsx --fix",
         "clean": "rm -rf dist node_modules/.vite",
         "type-check": "tsc --noEmit",
-        "create-app": "node scripts/create-app.js"
+        "create-app": "node scripts/create-app.js",
+        "add-app-to-config": "node scripts/add-app-to-config.js"
     },
     "dependencies": {
         "@radix-ui/react-label": "^2.1.7",

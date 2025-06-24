@@ -15,7 +15,8 @@ export default defineConfig({
         'website-launch-checklist': resolve(__dirname, 'apps/website-launch-checklist/index.html'),
       
         'analytics-tool-discovery': resolve(__dirname, 'apps/analytics-tool-discovery/index.html'),
-        'website-platform-discovery': resolve(__dirname, 'apps/website-platform-discovery/index.html'),},
+        'website-platform-discovery': resolve(__dirname, 'apps/website-platform-discovery/index.html'),
+        'color-palette-generator': resolve(__dirname, 'apps/color-palette-generator/index.html'),},
       output: {
         // Ensure unique chunk names for multiple apps
         chunkFileNames: (chunkInfo) => {

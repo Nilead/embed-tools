@@ -267,9 +267,14 @@ Object.entries(templates).forEach(([filename, content]) => {
   console.log(`📄 Created file: ${filePath}`);
 });
 
-// Update main vite.config.js
-const mainViteConfigPath = path.join(__dirname, '..', 'vite.config.js');
-if (fs.existsSync(mainViteConfigPath)) {
+// Function to update main vite.config.js
+function updateViteConfig() {
+  const mainViteConfigPath = path.join(__dirname, '..', 'vite.config.js');
+  if (!fs.existsSync(mainViteConfigPath)) {
+    console.warn('⚠️  Main vite.config.js not found, skipping update');
+    return;
+  }
+
   let viteConfig = fs.readFileSync(mainViteConfigPath, 'utf8');
   
   // Add new app to rollupOptions input
@@ -286,13 +291,22 @@ if (fs.existsSync(mainViteConfigPath)) {
       viteConfig = viteConfig.replace(inputRegex, `input: {${updatedInputs}}`);
       fs.writeFileSync(mainViteConfigPath, viteConfig);
       console.log(`📝 Updated main vite.config.js with ${appName}`);
+    } else {
+      console.log(`ℹ️  ${appName} already exists in vite.config.js`);
     }
+  } else {
+    console.warn('⚠️  Could not find input configuration in vite.config.js');
   }
 }
 
-// Update tsconfig.json
-const tsConfigPath = path.join(__dirname, '..', 'tsconfig.json');
-if (fs.existsSync(tsConfigPath)) {
+// Function to update tsconfig.json
+function updateTsConfig() {
+  const tsConfigPath = path.join(__dirname, '..', 'tsconfig.json');
+  if (!fs.existsSync(tsConfigPath)) {
+    console.warn('⚠️  tsconfig.json not found, skipping update');
+    return;
+  }
+
   let tsConfig = fs.readFileSync(tsConfigPath, 'utf8');
   
   // Add new app to paths
@@ -308,8 +322,12 @@ if (fs.existsSync(tsConfigPath)) {
       const updatedPaths = existingPaths + `, ${newPath}`;
       tsConfig = tsConfig.replace(pathsRegex, `"@/*": [${updatedPaths}]`);
       fs.writeFileSync(tsConfigPath, tsConfig);
-      console.log(`📝 Updated tsconfig.json with ${appName}`);
+      console.log(`📝 Updated tsconfig.json paths with ${appName}`);
+    } else {
+      console.log(`ℹ️  ${appName} already exists in tsconfig.json paths`);
     }
+  } else {
+    console.warn('⚠️  Could not find paths configuration in tsconfig.json');
   }
   
   // Add new app to include array
@@ -326,8 +344,23 @@ if (fs.existsSync(tsConfigPath)) {
       tsConfig = tsConfig.replace(includeRegex, `"include": [${updatedIncludes}]`);
       fs.writeFileSync(tsConfigPath, tsConfig);
       console.log(`📝 Updated tsconfig.json include with ${appName}`);
+    } else {
+      console.log(`ℹ️  ${appName} already exists in tsconfig.json include`);
     }
+  } else {
+    console.warn('⚠️  Could not find include configuration in tsconfig.json');
   }
+}
+
+// Update configuration files
+console.log('\n🔧 Updating configuration files...');
+updateViteConfig();
+updateTsConfig();
+
+// Verify the app was created successfully
+if (!fs.existsSync(path.join(newAppDir, 'package.json'))) {
+  console.error('❌ Failed to create app files!');
+  process.exit(1);
 }
 
 console.log('\n🎉 App created successfully!');
@@ -339,4 +372,7 @@ console.log(`\n2. Start developing:`);
 console.log(`   pnpm --filter ${appName} dev`);
 console.log(`\n3. Update the app description and meta tags in index.html`);
 console.log(`\n4. Customize the App.jsx component with your app logic`);
-console.log(`\n5. The app is automatically included in the main build configuration!`); 
+console.log(`\n5. The app is automatically included in the main build configuration!`);
+console.log(`\n💡 Tip: If you get "No projects matched the filters" error, try:`);
+console.log(`   pnpm install`);
+console.log(`   pnpm --filter ${appName} dev`); 
