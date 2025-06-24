@@ -107,6 +107,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>,
 );`,
 
+  'src/App.css': `@import '@embed-tools/components/globals.css';`,
+
   'vite.config.js': `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
@@ -117,6 +119,7 @@ export default defineConfig({
   base: '/embed-tools/${appName}/',
   build: {
     outDir: '../../dist/${appName}',
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         chunkFileNames: (chunkInfo) => {
@@ -139,6 +142,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      '@embed-tools/components': resolve(__dirname, '../../packages/components/src'),
     },
   },
   css: {
@@ -146,31 +150,61 @@ export default defineConfig({
   },
 });`,
 
+  'package.json': `{
+  "name": "${appName}",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --emptyOutDir",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@embed-tools/components": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.10",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5"
+  }
+}`,
+
   'src/App.jsx': `import React from 'react';
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gradient mb-4">
+          <h1 className="text-4xl font-bold text-primary mb-4">
             ${appName.replace(/-/g, ' ')}
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-muted-foreground">
             Your app description goes here
           </p>
         </header>
         
         <main>
-          <div className="card">
+          <div className="bg-card p-6 rounded-lg border">
             <h2 className="text-2xl font-semibold mb-4">Welcome to ${appName.replace(/-/g, ' ')}!</h2>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               This is your new embeddable web application. Start building your app by editing the files in the src directory.
             </p>
           </div>
         </main>
         
-        <footer className="text-center mt-12 text-gray-500">
+        <footer className="text-center mt-12 text-muted-foreground">
           <p>Built with React, Vite, and Tailwind CSS v4.0.0</p>
         </footer>
       </div>
@@ -180,71 +214,6 @@ const App = () => {
 
 export default App;`,
 
-  'src/App.css': `/**
- * Your Main CSS file for Tailwind CSS v4
- */
-
-/* 1. Import any webfonts at the very top (e.g., from Google Fonts) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-
-/* 2. Import the Tailwind framework */
-@import "tailwindcss";
-
-/* 3. Define all your theme customizations using @theme */
-@theme {
-  /*
-   * CORRECT NAMING CONVENTION:
-   * Use '--font-family-{your-name}' to create 'font-{your-name}'
-   */
-  --font-family-inter: 'Inter', sans-serif;
-
-  /* Spacing */
-  --spacing-18: 4.5rem;
-  --spacing-88: 22rem;
-
-  /* Colors (as space-separated RGB) */
-  --color-primary-500: 59 130 246;
-  --color-primary-600: 37 99 235;
-  --color-primary-400: 96 165 250;
-  /* Add other colors/shades as needed */
-}
-
-/* 4. Add your custom global, component, and utility styles */
-@layer base {
-  body {
-    /* This will now work correctly */
-    @apply font-family-inter;
-  }
-}
-
-@layer components {
-  .btn-primary {
-    @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
-  }
-  
-  .btn-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
-  }
-  
-  .card {
-    @apply bg-white rounded-xl shadow-lg border border-gray-100 p-6;
-  }
-  
-  .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
-  }
-}
-
-@layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
-  }
-  
-  .glass-effect {
-    @apply backdrop-blur-sm bg-white/80 border border-white/20;
-  }
-}`,
-
   'README.md': `# ${appName.replace(/-/g, ' ')}
 
 This is an embeddable web application built with React, Vite, and Tailwind CSS v4.0.0.
@@ -253,13 +222,13 @@ This is an embeddable web application built with React, Vite, and Tailwind CSS v
 
 \`\`\`bash
 # Start development server
-npm run dev:${appName}
+pnpm --filter ${appName} dev
 
 # Build for production
-npm run build:${appName}
+pnpm --filter ${appName} build
 
 # Preview build
-npm run preview:${appName}
+pnpm --filter ${appName} preview
 \`\`\`
 
 ## Embedding
@@ -280,9 +249,10 @@ Your app will be available at:
 
 ## Features
 
-- ✅ React 18 with modern hooks
+- ✅ React 19 with modern hooks
 - ✅ Vite for fast development and building
 - ✅ Tailwind CSS v4.0.0 for styling
+- ✅ Shared components from @embed-tools/components
 - ✅ Optimized for embedding
 - ✅ GitHub Pages deployment ready
 - ✅ Responsive design
@@ -297,14 +267,76 @@ Object.entries(templates).forEach(([filename, content]) => {
   console.log(`📄 Created file: ${filePath}`);
 });
 
+// Update main vite.config.js
+const mainViteConfigPath = path.join(__dirname, '..', 'vite.config.js');
+if (fs.existsSync(mainViteConfigPath)) {
+  let viteConfig = fs.readFileSync(mainViteConfigPath, 'utf8');
+  
+  // Add new app to rollupOptions input
+  const inputRegex = /input:\s*{([^}]+)}/;
+  const match = viteConfig.match(inputRegex);
+  
+  if (match) {
+    const existingInputs = match[1];
+    const newInput = `        '${appName}': resolve(__dirname, 'apps/${appName}/index.html'),`;
+    
+    // Check if app is already in the input
+    if (!existingInputs.includes(`'${appName}'`)) {
+      const updatedInputs = existingInputs + '\n' + newInput;
+      viteConfig = viteConfig.replace(inputRegex, `input: {${updatedInputs}}`);
+      fs.writeFileSync(mainViteConfigPath, viteConfig);
+      console.log(`📝 Updated main vite.config.js with ${appName}`);
+    }
+  }
+}
+
+// Update tsconfig.json
+const tsConfigPath = path.join(__dirname, '..', 'tsconfig.json');
+if (fs.existsSync(tsConfigPath)) {
+  let tsConfig = fs.readFileSync(tsConfigPath, 'utf8');
+  
+  // Add new app to paths
+  const pathsRegex = /"@\/\*":\s*\[([^\]]+)\]/;
+  const pathsMatch = tsConfig.match(pathsRegex);
+  
+  if (pathsMatch) {
+    const existingPaths = pathsMatch[1];
+    const newPath = `"./apps/${appName}/src/*"`;
+    
+    // Check if app is already in the paths
+    if (!existingPaths.includes(`"./apps/${appName}/src/*"`)) {
+      const updatedPaths = existingPaths + `, ${newPath}`;
+      tsConfig = tsConfig.replace(pathsRegex, `"@/*": [${updatedPaths}]`);
+      fs.writeFileSync(tsConfigPath, tsConfig);
+      console.log(`📝 Updated tsconfig.json with ${appName}`);
+    }
+  }
+  
+  // Add new app to include array
+  const includeRegex = /"include":\s*\[([^\]]+)\]/;
+  const includeMatch = tsConfig.match(includeRegex);
+  
+  if (includeMatch) {
+    const existingIncludes = includeMatch[1];
+    const newInclude = `"apps/${appName}/src"`;
+    
+    // Check if app is already in the includes
+    if (!existingIncludes.includes(`"apps/${appName}/src"`)) {
+      const updatedIncludes = existingIncludes + `, ${newInclude}`;
+      tsConfig = tsConfig.replace(includeRegex, `"include": [${updatedIncludes}]`);
+      fs.writeFileSync(tsConfigPath, tsConfig);
+      console.log(`📝 Updated tsconfig.json include with ${appName}`);
+    }
+  }
+}
+
 console.log('\n🎉 App created successfully!');
 console.log(`\n📁 App location: ${newAppDir}`);
 console.log('\n🚀 Next steps:');
-console.log(`1. Add build scripts to package.json:`);
-console.log(`   "dev:${appName}": "vite apps/${appName}"`);
-console.log(`   "build:${appName}": "vite build apps/${appName}"`);
-console.log(`   "preview:${appName}": "vite preview apps/${appName}"`);
+console.log(`1. Install dependencies:`);
+console.log(`   pnpm install`);
 console.log(`\n2. Start developing:`);
-console.log(`   npm run dev:${appName}`);
+console.log(`   pnpm --filter ${appName} dev`);
 console.log(`\n3. Update the app description and meta tags in index.html`);
-console.log(`\n4. Customize the App.jsx component with your app logic`); 
+console.log(`\n4. Customize the App.jsx component with your app logic`);
+console.log(`\n5. The app is automatically included in the main build configuration!`); 

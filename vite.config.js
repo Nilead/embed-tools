@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         'ai-model-discovery': resolve(__dirname, 'apps/ai-model-discovery/index.html'),
         'website-cost-estimator': resolve(__dirname, 'apps/website-cost-estimator/index.html'),
+        'website-launch-checklist': resolve(__dirname, 'apps/website-launch-checklist/index.html'),
       },
       output: {
         // Ensure unique chunk names for multiple apps
