@@ -59,7 +59,19 @@ export default function App() {
                 </div>
 
                 <footer className="text-center mt-12 text-muted-foreground text-sm">
-                    <p>Built to help you launch with confidence. &copy; {new Date().getFullYear()}</p>
+                    <p>&copy; {new Date().getFullYear()} Built to help you launch with confidence.</p>
+                    <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
+                    <p className="mt-2">
+                        Powered by{' '}
+                        <a 
+                            href="https://nilead.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline transition-colors"
+                        >
+                            Nilead
+                        </a>
+                    </p>
                 </footer>
             </div>
         </div>

@@ -502,6 +502,22 @@ function App() {
             </Card>
           </div>
         </div>
+        
+        <footer className="text-center mt-12 text-muted-foreground text-sm">
+            <p>&copy; {new Date().getFullYear()} Website Cost Estimator</p>
+            <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
+            <p className="mt-2">
+                Powered by{' '}
+                <a 
+                    href="https://nilead.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline transition-colors"
+                >
+                    Nilead
+                </a>
+            </p>
+        </footer>
       </div>
     </div>
   )
