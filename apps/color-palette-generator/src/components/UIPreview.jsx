@@ -47,10 +47,8 @@ const UIPreview = ({ palette }) => {
       <div className="border-b-2 border-gray-200 dark:border-gray-600 pb-2 mb-4 flex justify-between items-center">
         <h3 className="text-xl font-bold">UI Previews</h3>
         <Button
-          variant="outline"
-          size="sm"
           onClick={() => setPreviewKey(prev => prev + 1)}
-          className="cursor-pointer rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className="rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         >
           Refresh Previews
         </Button>

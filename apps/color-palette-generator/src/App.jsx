@@ -138,7 +138,7 @@ const App = () => {
             <div className="mb-6 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 onClick={() => fileInputRef.current?.click()}
-                className="cursor-pointer w-full sm:w-auto"
+                className="w-full sm:w-auto"
               >
                 Upload Image
               </Button>
@@ -166,9 +166,9 @@ const App = () => {
               </div>
               {palettes && (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   onClick={() => setShowExportModal(true)}
-                  className="cursor-pointer w-full sm:w-auto"
+                  className="w-full sm:w-auto"
                 >
                   Export Palettes
                 </Button>
