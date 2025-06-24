@@ -83,35 +83,16 @@ export default function App() {
   const getBreadcrumbText = () => {
     const criteria = [];
     
-    if (answers.primaryTask) {
-      const taskLabels = {
-        'text-generation': 'Text Generation',
-        'code-generation': 'Code Generation', 
-        'image-generation': 'Image Generation',
-        'translation': 'Translation',
-        'summarization': 'Summarization',
-        'question-answering': 'Question Answering'
-      };
-      criteria.push(taskLabels[answers.primaryTask] || answers.primaryTask);
-    }
-    
-    if (answers.keyPriority) {
-      const priorityLabels = {
-        'cost': 'Cost-Effective',
-        'speed': 'High Speed',
-        'quality': 'High Quality'
-      };
-      criteria.push(priorityLabels[answers.keyPriority] || answers.keyPriority);
-    }
-    
-    if (answers.volumeControl) {
-      const volumeLabels = {
-        'self-hosting': 'Self-Hosting',
-        'high-volume': 'High Volume',
-        'low-volume': 'Low Volume'
-      };
-      criteria.push(volumeLabels[answers.volumeControl] || answers.volumeControl);
-    }
+    // Find the selected option labels from quiz config
+    quizConfig.questions.forEach(question => {
+      const selectedValue = answers[question.id];
+      if (selectedValue) {
+        const selectedOption = question.options.find(option => option.value === selectedValue);
+        if (selectedOption) {
+          criteria.push(selectedOption.label);
+        }
+      }
+    });
     
     return criteria.length > 0 ? criteria.join(' • ') : null;
   };
