@@ -424,7 +424,6 @@ export default function App() {
                     <div className="text-center p-8 bg-blue-100 rounded-lg">
                       <h3 className="font-bold text-xl text-blue-800">Custom Quote Required</h3>
                       <p className="text-blue-600 mt-2">SaaS and web application projects are highly variable. Please contact us for a detailed quote.</p>
-                      <Button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white">Contact Us</Button>
                     </div>
                   ) : (
                     <>
