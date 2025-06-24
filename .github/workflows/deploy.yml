@@ -48,5 +48,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        cname: yourdomain.com  # Optional: Add your custom domain 
+        publish_dir: ./dist 

@@ -43,6 +43,35 @@ pnpm preview
 pnpm --filter ai-model-discovery preview
 ```
 
+## 🚀 Deployment to GitHub Pages
+
+### 1. Automatic Deployment (Recommended)
+- This repository uses a GitHub Actions workflow (`.github/workflows/deploy.yml`) to automatically deploy all apps to GitHub Pages whenever you push to the `master` branch.
+- The workflow builds all apps and publishes the `dist/` directory to the `gh-pages` branch.
+- **To deploy:** Just push your changes to GitHub and the deployment will happen automatically.
+
+**To check deployment:**
+- Go to your repo on GitHub → Actions tab → See if the "Deploy to GitHub Pages" workflow ran and succeeded.
+- Your apps will be available at:
+  - `https://nilead.github.io/embed-tools/ai-model-discovery/`
+  - `https://nilead.github.io/embed-tools/website-cost-estimator/`
+
+### 2. Manual Deployment (Optional)
+If you want to deploy manually, you can use the script:
+
+```bash
+pnpm deploy
+```
+
+This will:
+- Build all apps
+- Deploy the contents of `dist/` to the `gh-pages` branch using the `gh-pages` package
+
+### 3. GitHub Pages Settings
+- Make sure GitHub Pages is enabled in your repo settings:
+  - Go to **Settings → Pages**
+  - Set source to `gh-pages` branch, root folder
+
 ## 📱 Available Apps
 
 ### 1. AI Model Discovery
