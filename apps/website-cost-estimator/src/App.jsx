@@ -260,10 +260,10 @@ export default function App() {
   return (
     <div className="bg-muted/40 text-foreground min-h-screen">
       <div className="container mx-auto max-w-6xl p-4 md:p-8">
-        <header className="text-center mb-10">
+        {/* <header className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Website Cost Calculator</h1>
           <p className="mt-4 text-lg text-muted-foreground">Get a real-time estimate for your new website. Adjust options to see how they affect the price.</p>
-        </header>
+        </header> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           {/* Left Side: Questions */}
