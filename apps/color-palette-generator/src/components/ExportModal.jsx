@@ -40,7 +40,7 @@ const ExportModal = ({ isOpen, onClose, palettes }) => {
           <h2 className="cursor-pointer text-2xl font-bold text-gray-900 dark:text-white">Export Palettes</h2>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white text-2xl"
+            className="cursor-pointer text-gray-500 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white text-2xl"
             aria-label="Close"
           >
             &times;
