@@ -1,4 +1,3 @@
-
 # Guide: Install or Upgrade shadcn/ui with Tailwind CSS v4 using Vite
 
 This guide walks you through the **installation** of `shadcn/ui` and **Tailwind CSS v4** in a Vite + React 19 project, as well as the steps to **upgrade an existing project** from Tailwind v3.
@@ -52,7 +51,7 @@ Replace the contents of `src/index.css`:
 
 Remove legacy `@tailwind base/components/utilities` directives if present.
 
-### 4. Use Tailwind’s Vite Plugin (Recommended for v4)
+### 4. Use Tailwind's Vite Plugin (Recommended for v4)
 
 Update `vite.config.ts`:
 
@@ -78,6 +77,105 @@ The CLI will:
 - Ask about your project type (select Vite)
 - Let you pick a theme (`new-york` is now the default)
 - Add dependencies like `clsx`, `tailwind-merge`, `@radix-ui/react-*`, etc.
+
+---
+
+## ⚠️ CRITICAL: CSS Source Definition Setup
+
+**Important**: For shadcn/ui components to work properly with Tailwind CSS v4, you must have a proper `globals.css` file with CSS source definitions. This was a critical issue that caused apps to not render properly.
+
+### Required globals.css Structure
+
+Create or update `src/globals.css`:
+
+```css
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+```
+
+### Import globals.css in Your App
+
+Make sure to import this file in your main entry point (`src/main.tsx` or `src/main.jsx`):
+
+```tsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './globals.css' // ← This import is CRITICAL
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+```
+
+**Why this is critical**: Without these CSS source definitions, shadcn/ui components will not render with proper styling, and the app may appear completely unstyled or broken.
 
 ---
 
@@ -110,7 +208,7 @@ If you use PostCSS, ensure you're using `@tailwindcss/postcss`.
 
 - Make sure `tailwind.config.js` uses `@import "tailwindcss"`
 - Remove `postcss-import` and `autoprefixer` from PostCSS config
-- Migrate to Tailwind’s **native CLI or Vite plugin** (as shown above)
+- Migrate to Tailwind's **native CLI or Vite plugin** (as shown above)
 
 ---
 
@@ -185,7 +283,7 @@ function AccordionItem(props: ComponentProps<...>) {
 
 ### Step 5. Update Chart and JS Configs
 
-If you’re using chart colors:
+If you're using chart colors:
 
 ```ts
 // Before
@@ -200,60 +298,106 @@ color: "var(--chart-1)"
 ### Step 6. Update shadcn/ui Dependencies
 
 ```bash
-pnpm up "@radix-ui/*" cmdk lucide-react recharts tailwind-merge clsx --latest
-```
-
-If you're using `tailwindcss-animate`, replace it with:
-
-```bash
-npm uninstall tailwindcss-animate
-npm install -D tw-animate-css
-```
-
-Then in your CSS:
-```css
-@import "tw-animate-css";
+# Update to latest versions
+npm install @radix-ui/react-*@latest
+npm install class-variance-authority@latest
+npm install clsx@latest
+npm install tailwind-merge@latest
 ```
 
 ---
 
-### Step 7. Commit and Backup
+## 🎨 Monorepo Setup with Shared Components
 
-Before running any CLI commands that may **overwrite components**, always:
+For monorepo setups (like this project), ensure your `globals.css` is in the shared components package and imported correctly:
 
-```bash
-git add .
-git commit -m "Backup before shadcn/ui component updates"
+### Shared Components Package Structure
+```
+packages/components/
+├── src/
+│   ├── globals.css          # ← CRITICAL: CSS source definitions here
+│   ├── components/
+│   └── index.ts
+├── tailwind.config.js
+└── package.json
+```
+
+### App-Specific Import
+```tsx
+// In your app's main.tsx
+import '@your-org/components/globals.css' // ← Import shared globals.css
+import App from './App'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+```
+
+### Tailwind Config Inheritance
+```js
+// app/tailwind.config.js
+const sharedConfig = require('@your-org/components/tailwind.config');
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  presets: [sharedConfig],
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    '../../packages/components/src/**/*.{js,ts,jsx,tsx}',
+  ],
+};
 ```
 
 ---
 
-## 🛠 Additional Notes & Compatibility
+## 🚨 Common Issues and Solutions
 
-- Tailwind v4 **does not support** Sass, Less, Stylus
-- Preprocessors are unnecessary — Tailwind supports variables, nesting, imports natively
-- Only modern browsers supported (Safari 16.4+, Chrome 111+, Firefox 128+)
+### Issue: Components Not Styled
+**Problem**: shadcn/ui components appear unstyled or broken
+**Solution**: Ensure `globals.css` is imported and contains proper CSS source definitions
+
+### Issue: Tailwind Classes Not Working
+**Problem**: Tailwind utility classes not applying
+**Solution**: 
+1. Check that `@import "tailwindcss"` is in your CSS
+2. Verify content paths in `tailwind.config.js`
+3. Ensure Vite plugin is configured correctly
+
+### Issue: Dark Mode Not Working
+**Problem**: Dark mode classes not applying
+**Solution**: Make sure your `globals.css` includes both `:root` and `.dark` variable definitions
+
+### Issue: Build Errors
+**Problem**: Build fails with CSS-related errors
+**Solution**: 
+1. Check for legacy `@tailwind` directives
+2. Ensure PostCSS config is updated for v4
+3. Verify all imports use the new syntax
 
 ---
 
-## ✅ Final Check
+## 📚 Additional Resources
 
-| Feature              | Tailwind v4 Support |
-|----------------------|---------------------|
-| Native `@import`     | ✅ Yes              |
-| PostCSS support      | ✅ With `@tailwindcss/postcss` |
-| CLI builds           | ✅ Using `@tailwindcss/cli` |
-| Vite Plugin          | ✅ Recommended      |
-| Sass/Less/Stylus     | ❌ Not supported    |
-| Modern JS frameworks | ✅ React 19, Vue 3, Astro |
+- [Tailwind CSS v4 Documentation](https://tailwindcss.com/docs)
+- [shadcn/ui Documentation](https://ui.shadcn.com/)
+- [Vite Documentation](https://vitejs.dev/)
+- [React 19 Documentation](https://react.dev/)
 
 ---
 
-## 📎 Resources
+## 🔧 Troubleshooting Checklist
 
-- Tailwind v4 Docs: https://tailwindcss.com/docs/upgrade-guide
-- shadcn/ui Docs: https://ui.shadcn.com/docs/tailwind-v4
-- Compatibility: https://tailwindcss.com/docs/compatibility
+- [ ] `globals.css` contains proper CSS source definitions
+- [ ] `globals.css` is imported in main entry point
+- [ ] Tailwind config uses `@import "tailwindcss"`
+- [ ] Vite plugin is configured correctly
+- [ ] Content paths include all component files
+- [ ] No legacy `@tailwind` directives
+- [ ] PostCSS config updated for v4
+- [ ] All dependencies are latest versions
 
 ---
 

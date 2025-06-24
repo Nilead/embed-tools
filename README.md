@@ -1,6 +1,6 @@
 # Embed Tools - Monorepo for Embeddable Web Applications
 
-A monorepo containing embeddable web applications built with React, Vite, TypeScript, and Tailwind CSS v4.0.0, designed for deployment on GitHub Pages. This project uses pnpm workspaces to manage multiple apps with shared UI components and configurations.
+A monorepo containing embeddable web applications built with React 19, Vite, TypeScript, and Tailwind CSS v4.0.0, designed for deployment on GitHub Pages. This project uses pnpm workspaces to manage multiple apps with shared UI components and configurations.
 
 ## 🚀 Quick Start
 
@@ -50,9 +50,11 @@ A comprehensive tool to help users find the perfect AI model for their use case.
 
 **Features:**
 - Interactive questionnaire-based model selection
-- Detailed model comparisons
+- Detailed model comparisons with expandable cards
 - Pricing and performance metrics
+- Token usage information
 - Responsive design with shared UI components
+- Breadcrumb navigation showing selected criteria
 
 **URL:** `https://nilead.github.io/embed-tools/ai-model-discovery/`
 
@@ -74,12 +76,17 @@ embed-tools/
 ├── apps/                           # Individual applications
 │   ├── ai-model-discovery/         # AI Model Discovery app
 │   │   ├── src/
-│   │   │   ├── App.tsx            # Main app component
-│   │   │   ├── main.tsx           # Entry point
-│   │   │   └── index.css          # App-specific styles
+│   │   │   ├── App.jsx            # Main app component
+│   │   │   ├── components/        # App-specific components
+│   │   │   │   ├── QuestionStep.jsx
+│   │   │   │   ├── ResultsStep.jsx
+│   │   │   │   ├── ModelCard.jsx
+│   │   │   │   └── TokensInfo.jsx
+│   │   │   └── data/              # App data and configuration
+│   │   │       ├── aiModels.js
+│   │   │       └── quizConfig.js
 │   │   ├── index.html             # HTML template
 │   │   ├── package.json           # App-specific dependencies
-│   │   ├── tailwind.config.js     # App-specific Tailwind config
 │   │   ├── tsconfig.json          # App-specific TypeScript config
 │   │   └── vite.config.js         # App-specific Vite config
 │   ├── website-cost-estimator/     # Website Cost Estimator app
@@ -91,7 +98,7 @@ embed-tools/
 │   │   ├── src/
 │   │   │   ├── components/        # Reusable UI components
 │   │   │   ├── lib/               # Utility functions
-│   │   │   └── globals.css        # Global styles
+│   │   │   └── globals.css        # Global styles (CRITICAL for CSS source definition)
 │   │   ├── components.json        # shadcn/ui configuration
 │   │   ├── package.json           # Component library dependencies
 │   │   ├── tailwind.config.js     # Shared Tailwind theme
@@ -99,13 +106,17 @@ embed-tools/
 │   └── tsconfig/                  # Shared TypeScript configurations
 │       ├── base.json              # Base TypeScript config
 │       └── react-app.json         # React app TypeScript config
+├── dist/                          # Production builds
+│   ├── ai-model-discovery/        # Built AI Model Discovery app
+│   └── website-cost-estimator/    # Built Website Cost Estimator app
 ├── scripts/
 │   └── create-app.js              # App generator script
 ├── pnpm-workspace.yaml            # pnpm workspace configuration
 ├── package.json                   # Root package.json (monorepo manager)
 ├── tsconfig.json                  # Root TypeScript config
 ├── vite.config.js                 # Root Vite configuration
-└── README.md                      # This file
+├── README.md                      # This file
+└── TAILWIND.md                    # Tailwind CSS v4 setup guide
 ```
 
 ## 🔧 Configuration
@@ -131,7 +142,7 @@ Contains all shared UI components built with shadcn/ui:
 - Reusable React components
 - Shared Tailwind theme
 - Utility functions
-- Global styles
+- **Global styles with CSS source definition** (see important note below)
 
 #### TypeScript Config Package (`packages/tsconfig`)
 Provides shared TypeScript configurations:
@@ -142,8 +153,83 @@ Provides shared TypeScript configurations:
 Each app in `apps/` has its own:
 - `package.json` with app-specific dependencies
 - `vite.config.js` for build configuration
-- `tailwind.config.js` that extends the shared theme
 - `tsconfig.json` that extends shared configurations
+
+## ⚠️ Important: CSS Source Definition Fix
+
+**Critical Issue Resolved**: The apps were initially not working due to missing CSS source definitions. This was fixed by ensuring the `packages/components/src/globals.css` file contains the proper CSS source definition:
+
+```css
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+```
+
+This file must be imported in each app's main entry point to ensure proper styling.
 
 ## 🎨 Tailwind CSS v4.0.0 Features
 
@@ -161,7 +247,44 @@ module.exports = {
     },
     extend: {
       colors: {
-        // Your brand colors
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },
@@ -190,122 +313,47 @@ module.exports = {
 @import "tailwindcss";
 ```
 
-### CSS Custom Properties
-```css
-:root {
-  --color-primary: 59 130 246;
-  --color-primary-light: 96 165 250;
-  --color-primary-dark: 37 99 235;
-}
-```
+## 🚀 Deployment
 
-## 📦 Creating New Apps
+### GitHub Pages
+The apps are automatically deployed to GitHub Pages when pushed to the main branch. The build process creates optimized production builds in the `dist/` directory.
 
-### Using the App Generator (Recommended)
+### Local Preview
 ```bash
-# Create a new app
-pnpm create-app my-new-app
-
-# The script will:
-# ✅ Create the app directory structure
-# ✅ Generate all necessary files with correct naming
-# ✅ Set up Vite config with proper paths
-# ✅ Create a basic React component with TypeScript
-# ✅ Add Tailwind CSS v4.0.0 styles
-# ✅ Configure app to use shared packages
-# ✅ Generate app-specific README
+# Build and preview locally
+pnpm build
+pnpm preview
 ```
 
-### Manual Creation
-1. Create a new directory in `apps/`:
+## 🔧 Development Workflow
+
+### Creating a New App
 ```bash
-mkdir apps/your-new-app
+# Use the app generator script
+node scripts/create-app.js my-new-app
 ```
 
-2. Create `package.json` with workspace dependencies:
-```json
-{
-  "name": "your-new-app",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@embed-tools/components": "workspace:*",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.6.0",
-    "tailwindcss": "^4.1.10",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.5"
-  }
-}
+### Adding New Components
+1. Add components to `packages/components/src/components/`
+2. Export them from `packages/components/src/index.ts`
+3. Import in apps using `@embed-tools/components`
+
+### Updating Shared Dependencies
+```bash
+# Add to root package.json for workspace-wide dependencies
+pnpm add -w package-name
+
+# Add to specific app
+pnpm --filter app-name add package-name
 ```
 
-3. Set up configuration files:
-   - `vite.config.js` - Vite configuration
-   - `tailwind.config.js` - Extends shared theme
-   - `tsconfig.json` - Extends shared TypeScript config
-   - `index.html` - HTML template
-   - `src/` - App source code
+## 📝 Recent Updates
 
-## 🌐 Embedding in Other Websites
-
-### Iframe Embedding
-```html
-<iframe 
-  src="https://nilead.github.io/embed-tools/ai-model-discovery/"
-  width="100%" 
-  height="600px" 
-  frameborder="0"
-  title="AI Model Discovery Tool">
-</iframe>
-```
-
-### JavaScript Embedding
-```html
-<div id="ai-model-discovery-container"></div>
-<script>
-  // Load the app dynamically
-  const script = document.createElement('script');
-  script.src = 'https://nilead.github.io/embed-tools/ai-model-discovery/assets/main.js';
-  document.head.appendChild(script);
-</script>
-```
-
-## 🚀 GitHub Pages Deployment
-
-1. **Repository Setup:**
-   - Create a GitHub repository named `embed-tools`
-   - Enable GitHub Pages in repository settings
-   - Set source to "Deploy from a branch" → "gh-pages"
-
-2. **Deploy:**
-   ```bash
-   pnpm build
-   # Deploy the dist folders from each app
-   ```
-
-3. **Access your apps:**
-   - AI Model Discovery: `https://nilead.github.io/embed-tools/ai-model-discovery/`
-   - Website Cost Estimator: `https://nilead.github.io/embed-tools/website-cost-estimator/`
-
-## 🔍 Performance Optimization
-
-- **Monorepo Benefits:** Shared dependencies reduce bundle sizes
-- **Code Splitting:** Automatic chunk splitting for better loading
-- **Minification:** Terser for optimal bundle size
-- **Tree Shaking:** Unused code elimination
-- **Font Optimization:** Preloaded Google Fonts
-- **Image Optimization:** Vite's built-in image optimization
-- **Tailwind v4.0.0:** Smaller CSS bundles and better performance
-- **Shared Components:** Reduced duplication across apps
+- **Fixed CSS source definition issue** - Critical fix for proper styling
+- **Enhanced AI Model Discovery app** - Added breadcrumb navigation and improved card interactions
+- **Updated to React 19** - Latest React version with improved performance
+- **Improved build process** - Better monorepo build configuration
+- **Added interactive model cards** - Clickable cards with expandable details
 
 ## 🎨 Customization
 
