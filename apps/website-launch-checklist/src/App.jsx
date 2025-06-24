@@ -41,7 +41,7 @@ export default function App() {
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
-                                className={`flex items-center justify-center font-semibold px-4 py-3 md:px-6 md:py-4 -mb-px border-b-2 transition-all duration-300 ease-in-out ${
+                                className={`cursor-pointer flex items-center justify-center font-semibold px-4 py-3 md:px-6 md:py-4 -mb-px border-b-2 transition-all duration-300 ease-in-out ${
                                     activeTab === item.id
                                         ? 'border-primary text-primary'
                                         : 'border-transparent text-muted-foreground hover:text-primary hover:border-primary/30'
