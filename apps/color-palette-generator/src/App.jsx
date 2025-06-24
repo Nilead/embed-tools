@@ -168,7 +168,7 @@ const App = () => {
                 <Button
                   variant="outline"
                   onClick={() => setShowExportModal(true)}
-                  className="w-full sm:w-auto"
+                  className="cursor-pointer w-full sm:w-auto"
                 >
                   Export Palettes
                 </Button>
