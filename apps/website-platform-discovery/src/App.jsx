@@ -83,11 +83,12 @@ const App = () => {
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
       <div className="container mx-auto p-4 md:p-8">
-        <header className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Find Your Perfect Website Solution</h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">Answer 3 simple questions to get a personalized recommendation for your next project.</p>
-        </header>
-
+        {!isEmbedded && (
+          <header className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Find Your Perfect Website Solution</h1>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">Answer 3 simple questions to get a personalized recommendation for your next project.</p>
+          </header>
+        )}
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 max-w-4xl mx-auto">
           <div className="space-y-12">
             {/* Project Goal Question */}
@@ -150,7 +151,7 @@ const App = () => {
           <div id="result-section" className="mt-16 p-8 bg-white rounded-2xl shadow-lg border border-gray-100 animate-fade-in max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-8">Your Results</h2>
             {/* Final Recommendation */}
-            {finalRecommendation && 
+            {finalRecommendation &&
               <div className="text-center p-8 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg mb-12">
                 <h3 className="text-3xl font-bold text-white mb-4">{finalRecommendationDetails[finalRecommendation].title}</h3>
                 <p className="text-gray-300 mb-6 max-w-3xl mx-auto">{finalRecommendationDetails[finalRecommendation].description}</p>

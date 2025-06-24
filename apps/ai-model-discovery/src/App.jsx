@@ -54,16 +54,16 @@ export default function App() {
     const filtered = aiModels.filter(model => {
       // Check if model supports the primary task
       const supportsTask = model.tags.task.includes(answers.primaryTask);
-      
+
       // Check priority match
-      const priorityMatch = answers.keyPriority ? 
+      const priorityMatch = answers.keyPriority ?
         model.tags.priority.includes(answers.keyPriority) : true;
-      
+
       // Check volume control
-      const volumeMatch = answers.volumeControl ? 
-        (answers.volumeControl === 'self-hosting' ? 
-          model.tags.features?.includes('self-hosting') : 
-          answers.volumeControl === 'high-volume' ? 
+      const volumeMatch = answers.volumeControl ?
+        (answers.volumeControl === 'self-hosting' ?
+          model.tags.features?.includes('self-hosting') :
+          answers.volumeControl === 'high-volume' ?
             model.tags.special?.includes('high-volume') : true) : true;
 
       return supportsTask && priorityMatch && volumeMatch;
@@ -82,7 +82,7 @@ export default function App() {
   // Generate breadcrumb text from answers
   const getBreadcrumbText = () => {
     const criteria = [];
-    
+
     // Find the selected option labels from quiz config
     quizConfig.questions.forEach(question => {
       const selectedValue = answers[question.id];
@@ -93,7 +93,7 @@ export default function App() {
         }
       }
     });
-    
+
     return criteria.length > 0 ? criteria.join(' • ') : null;
   };
 
@@ -103,12 +103,16 @@ export default function App() {
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-4xl mx-auto">
         <header className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">AI Model Discovery Tool</h1>
-          <p className="text-muted-foreground mt-2">
-            Find the perfect AI model for your needs by answering a few simple questions.
-          </p>
-          <Button 
-            variant="outline" 
+          {!isEmbedded && (
+            <>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">AI Model Discovery Tool</h1>
+              <p className="text-muted-foreground mt-2">
+                Find the perfect AI model for your needs by answering a few simple questions.
+              </p>
+            </>
+          )}
+          <Button
+            variant="outline"
             onClick={() => dispatch({ type: 'TOGGLE_TOKENS_INFO' })}
             className="mt-4"
           >
@@ -131,7 +135,7 @@ export default function App() {
             {showTokensInfo ? (
               <TokensInfo onBack={() => dispatch({ type: 'TOGGLE_TOKENS_INFO' })} />
             ) : isQuizFinished ? (
-              <ResultsStep 
+              <ResultsStep
                 recommendedModels={recommendedModels}
                 onBack={() => dispatch({ type: 'PREVIOUS_STEP' })}
                 onRestart={() => dispatch({ type: 'RESTART' })}
@@ -171,9 +175,9 @@ export default function App() {
             <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
             <p className="mt-2">
               Powered by{' '}
-              <a 
-                href="https://nilead.com" 
-                target="_blank" 
+              <a
+                href="https://nilead.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline transition-colors"
               >

@@ -25,7 +25,7 @@ export default function App() {
     },
     content: 'client'
   })
-  
+
   const [hourlyRate, setHourlyRate] = useState(75)
   const [totalCost, setTotalCost] = useState(0)
   const [totalHours, setTotalHours] = useState(0)
@@ -260,141 +260,143 @@ export default function App() {
   return (
     <div className="bg-muted/40 text-foreground min-h-screen">
       <div className="container mx-auto max-w-6xl p-4 md:p-8">
-        {/* <header className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Website Cost Calculator</h1>
-          <p className="mt-4 text-lg text-muted-foreground">Get a real-time estimate for your new website. Adjust options to see how they affect the price.</p>
-        </header> */}
+        {!isEmbedded && (
+          <header className="text-center mb-10">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Website Cost Calculator</h1>
+            <p className="mt-4 text-lg text-muted-foreground">Get a real-time estimate for your new website. Adjust options to see how they affect the price.</p>
+          </header>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           {/* Left Side: Questions */}
           <div className="lg:col-span-3 space-y-6">
-              {/* Step 1: Project Goal */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-foreground">1. What is the main goal of your website?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={formData.goal} onValueChange={(value) => handleInputChange('goal', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {goalOptions.map((option) => (
-                      <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.goal === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
-                        <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
-                        <h3 className="font-semibold">{option.label}</h3>
-                        <p className="text-muted-foreground text-sm font-normal">{option.description}</p>
-                      </Label>
-                    ))}
-                  </RadioGroup>
-                </CardContent>
-              </Card>
-
-              {/* Step 2: Number of Pages */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-foreground">2. How many unique page <span className="font-bold">templates</span> will you need?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center space-x-4 h-10 w-full">
-                    <Slider
-                      value={[formData.pages]}
-                      min={1}
-                      max={50}
-                      step={1}
-                      onValueChange={(value) => handleInputChange('pages', value[0])}
-                      className="w-full h-full"
-                    />
-                    <span className="font-semibold text-foreground text-lg w-16 text-center p-2 border rounded-md">
-                      {formData.pages}
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground text-sm mt-2">
-                    Count each unique page layout. For example, the page design for all 5,000 of your products counts as just <span className="font-semibold">one template</span>.
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Step 3: Design Quality */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-foreground">3. What level of design do you require?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={formData.design} onValueChange={(value) => handleInputChange('design', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {designOptions.map((option) => (
-                       <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.design === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
-                        <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
-                        <h3 className="font-semibold">{option.label}</h3>
-                        <p className="text-muted-foreground text-sm font-normal">{option.description}</p>
-                      </Label>
-                    ))}
-                  </RadioGroup>
-                </CardContent>
-              </Card>
-
-              {/* Step 4: Features */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-foreground">4. Select your required features</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {featureOptions.map((feature) => (
-                    <div key={feature.key}>
-                      <h3 className="font-semibold text-foreground mb-2">{feature.name}</h3>
-                      <RadioGroup value={formData.features[feature.key]} onValueChange={(value) => handleFeatureChange(feature.key, value)} className="flex items-center space-x-4">
-                        {feature.options.map((option) => (
-                          <div key={option.value} className="flex items-center space-x-2">
-                            <RadioGroupItem value={option.value} id={`${feature.key}-${option.value}`} />
-                            <Label htmlFor={`${feature.key}-${option.value}`} className="cursor-pointer">{option.label}</Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
+            {/* Step 1: Project Goal */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">1. What is the main goal of your website?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={formData.goal} onValueChange={(value) => handleInputChange('goal', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {goalOptions.map((option) => (
+                    <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.goal === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
+                      <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
+                      <h3 className="font-semibold">{option.label}</h3>
+                      <p className="text-muted-foreground text-sm font-normal">{option.description}</p>
+                    </Label>
                   ))}
-                </CardContent>
-              </Card>
+                </RadioGroup>
+              </CardContent>
+            </Card>
 
-              {/* Step 5: Content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-foreground">5. Who will provide the content?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={formData.content} onValueChange={(value) => handleInputChange('content', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {contentOptions.map((option) => (
-                      <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.content === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
-                        <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
-                        <h3 className="font-semibold">{option.label}</h3>
-                        <p className="text-muted-foreground text-sm font-normal">{option.description}</p>
-                      </Label>
-                    ))}
-                  </RadioGroup>
-                </CardContent>
-              </Card>
+            {/* Step 2: Number of Pages */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">2. How many unique page <span className="font-bold">templates</span> will you need?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-4 h-10 w-full">
+                  <Slider
+                    value={[formData.pages]}
+                    min={1}
+                    max={50}
+                    step={1}
+                    onValueChange={(value) => handleInputChange('pages', value[0])}
+                    className="w-full h-full"
+                  />
+                  <span className="font-semibold text-foreground text-lg w-16 text-center p-2 border rounded-md">
+                    {formData.pages}
+                  </span>
+                </div>
+                <p className="text-muted-foreground text-sm mt-2">
+                  Count each unique page layout. For example, the page design for all 5,000 of your products counts as just <span className="font-semibold">one template</span>.
+                </p>
+              </CardContent>
+            </Card>
 
-              {/* Step 6: Platform Choice */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-foreground">6. Choose Your Platform</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={formData.platform} onValueChange={(value) => handleInputChange('platform', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {platformOptions.map((option) => (
-                      <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.platform === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
-                        <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
-                        <h3 className="font-semibold text-lg mb-4">{option.label}</h3>
-                        <div className="space-y-2 text-sm">
-                          <h4 className="font-semibold text-green-600">✅ Pros</h4>
-                          <ul className="list-disc list-inside space-y-1">
-                            {option.pros.map((pro, i) => <li key={i}>{pro}</li>)}
-                          </ul>
-                          <h4 className="font-semibold text-red-600 mt-4">❌ Cons</h4>
-                          <ul className="list-disc list-inside space-y-1">
-                            {option.cons.map((con, i) => <li key={i}>{con}</li>)}
-                          </ul>
+            {/* Step 3: Design Quality */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">3. What level of design do you require?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={formData.design} onValueChange={(value) => handleInputChange('design', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {designOptions.map((option) => (
+                    <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.design === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
+                      <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
+                      <h3 className="font-semibold">{option.label}</h3>
+                      <p className="text-muted-foreground text-sm font-normal">{option.description}</p>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </CardContent>
+            </Card>
+
+            {/* Step 4: Features */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">4. Select your required features</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {featureOptions.map((feature) => (
+                  <div key={feature.key}>
+                    <h3 className="font-semibold text-foreground mb-2">{feature.name}</h3>
+                    <RadioGroup value={formData.features[feature.key]} onValueChange={(value) => handleFeatureChange(feature.key, value)} className="flex items-center space-x-4">
+                      {feature.options.map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <RadioGroupItem value={option.value} id={`${feature.key}-${option.value}`} />
+                          <Label htmlFor={`${feature.key}-${option.value}`} className="cursor-pointer">{option.label}</Label>
                         </div>
-                      </Label>
-                    ))}
-                  </RadioGroup>
-                </CardContent>
-              </Card>
+                      ))}
+                    </RadioGroup>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Step 5: Content */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">5. Who will provide the content?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={formData.content} onValueChange={(value) => handleInputChange('content', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {contentOptions.map((option) => (
+                    <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.content === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
+                      <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
+                      <h3 className="font-semibold">{option.label}</h3>
+                      <p className="text-muted-foreground text-sm font-normal">{option.description}</p>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </CardContent>
+            </Card>
+
+            {/* Step 6: Platform Choice */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">6. Choose Your Platform</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={formData.platform} onValueChange={(value) => handleInputChange('platform', value)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {platformOptions.map((option) => (
+                    <Label key={option.value} htmlFor={option.value} className={`flex flex-col items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-accent hover:border-primary ${formData.platform === option.value ? 'bg-accent border-primary' : 'border-border'}`}>
+                      <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
+                      <h3 className="font-semibold text-lg mb-4">{option.label}</h3>
+                      <div className="space-y-2 text-sm">
+                        <h4 className="font-semibold text-green-600">✅ Pros</h4>
+                        <ul className="list-disc list-inside space-y-1">
+                          {option.pros.map((pro, i) => <li key={i}>{pro}</li>)}
+                        </ul>
+                        <h4 className="font-semibold text-red-600 mt-4">❌ Cons</h4>
+                        <ul className="list-disc list-inside space-y-1">
+                          {option.cons.map((con, i) => <li key={i}>{con}</li>)}
+                        </ul>
+                      </div>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Right Side: Cost Summary */}
@@ -506,23 +508,23 @@ export default function App() {
             </Card>
           </div>
         </div>
-        
+
         {!isEmbedded && (
-            <footer className="text-center mt-12 text-muted-foreground text-sm">
-                <p>&copy; {new Date().getFullYear()} Website Cost Estimator</p>
-                <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
-                <p className="mt-2">
-                    Powered by{' '}
-                    <a 
-                        href="https://nilead.com" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline transition-colors"
-                    >
-                        Nilead
-                    </a>
-                </p>
-            </footer>
+          <footer className="text-center mt-12 text-muted-foreground text-sm">
+            <p>&copy; {new Date().getFullYear()} Website Cost Estimator</p>
+            <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
+            <p className="mt-2">
+              Powered by{' '}
+              <a
+                href="https://nilead.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline transition-colors"
+              >
+                Nilead
+              </a>
+            </p>
+          </footer>
         )}
       </div>
     </div>
