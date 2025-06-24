@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import { quizConfig } from './data/quizConfig';
 import { aiModels } from './data/aiModels';
 import QuestionStep from './components/QuestionStep';
@@ -36,9 +36,12 @@ function reducer(state, action) {
   }
 }
 
-function App() {
+export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { currentStep, answers, showTokensInfo } = state;
+  const [models, setModels] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const isEmbedded = window.self !== window.top;
 
   const isQuizFinished = currentStep >= quizConfig.questions.length - 1;
 
@@ -181,24 +184,24 @@ function App() {
           )}
         </footer>
 
-        <footer className="text-center mt-12 text-muted-foreground text-sm">
-          <p>&copy; {new Date().getFullYear()} AI Model Discovery Tool</p>
-          <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
-          <p className="mt-2">
-            Powered by{' '}
-            <a 
-              href="https://nilead.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline transition-colors"
-            >
-              Nilead
-            </a>
-          </p>
-        </footer>
+        {!isEmbedded && (
+          <footer className="text-center mt-12 text-muted-foreground text-sm">
+            <p>&copy; {new Date().getFullYear()} AI Model Discovery Tool</p>
+            <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
+            <p className="mt-2">
+              Powered by{' '}
+              <a 
+                href="https://nilead.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline transition-colors"
+              >
+                Nilead
+              </a>
+            </p>
+          </footer>
+        )}
       </div>
     </div>
   );
 }
-
-export default App;

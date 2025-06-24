@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@embed-tools/component
 import { Separator } from "@embed-tools/components";
 import { Input } from "@embed-tools/components";
 
-function App() {
+export default function App() {
   const [formData, setFormData] = useState({
     platform: 'nilead',
     goal: 'brochure',
@@ -31,6 +31,11 @@ function App() {
   const [totalHours, setTotalHours] = useState(0)
   const [costBreakdown, setCostBreakdown] = useState([])
   const [isSaaS, setIsSaaS] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [estimate, setEstimate] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const isEmbedded = window.self !== window.top;
 
   const platformOptions = [
     {
@@ -503,24 +508,24 @@ function App() {
           </div>
         </div>
         
-        <footer className="text-center mt-12 text-muted-foreground text-sm">
-            <p>&copy; {new Date().getFullYear()} Website Cost Estimator</p>
-            <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
-            <p className="mt-2">
-                Powered by{' '}
-                <a 
-                    href="https://nilead.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline transition-colors"
-                >
-                    Nilead
-                </a>
-            </p>
-        </footer>
+        {!isEmbedded && (
+            <footer className="text-center mt-12 text-muted-foreground text-sm">
+                <p>&copy; {new Date().getFullYear()} Website Cost Estimator</p>
+                <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
+                <p className="mt-2">
+                    Powered by{' '}
+                    <a 
+                        href="https://nilead.com" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline transition-colors"
+                    >
+                        Nilead
+                    </a>
+                </p>
+            </footer>
+        )}
       </div>
     </div>
   )
 }
-
-export default App

@@ -7,6 +7,7 @@ import LaunchDayTracker from './components/LaunchDayTracker';
 // Main Application Component
 export default function App() {
     const [activeTab, setActiveTab] = useState('timeline');
+    const isEmbedded = window.self !== window.top;
 
     const renderContent = () => {
         switch (activeTab) {
@@ -58,21 +59,23 @@ export default function App() {
                     </main>
                 </div>
 
-                <footer className="text-center mt-12 text-muted-foreground text-sm">
-                    <p>&copy; {new Date().getFullYear()} Built to help you launch with confidence.</p>
-                    <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
-                    <p className="mt-2">
-                        Powered by{' '}
-                        <a 
-                            href="https://nilead.com" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline transition-colors"
-                        >
-                            Nilead
-                        </a>
-                    </p>
-                </footer>
+                {!isEmbedded && (
+                    <footer className="text-center mt-12 text-muted-foreground text-sm">
+                        <p>&copy; {new Date().getFullYear()} Built to help you launch with confidence.</p>
+                        <p className="mt-1">Fully managed One-Stop Digital Marketing Platform</p>
+                        <p className="mt-2">
+                            Powered by{' '}
+                            <a 
+                                href="https://nilead.com" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline transition-colors"
+                            >
+                                Nilead
+                            </a>
+                        </p>
+                    </footer>
+                )}
             </div>
         </div>
     );
