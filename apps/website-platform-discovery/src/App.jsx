@@ -155,11 +155,14 @@ const App = () => {
                 <h3 className="text-3xl font-bold text-white mb-4">{finalRecommendationDetails[finalRecommendation].title}</h3>
                 <p className="text-gray-300 mb-6 max-w-3xl mx-auto">{finalRecommendationDetails[finalRecommendation].description}</p>
                 <a
-                  href="#"
+                  href="https://nilead.com/website-solutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-white text-gray-900 font-bold py-5 px-8 rounded-full shadow-md hover:bg-gray-200 transition-colors min-h-[56px] text-lg inline-block"
                   style={{ minHeight: 56 }}
                 >
                   {finalRecommendationDetails[finalRecommendation].cta}
+                  <span className="ml-2" aria-hidden>↗</span>
                 </a>
               </div>
             }
