@@ -50,11 +50,9 @@ const UIPreview = ({ palette }) => {
           variant="outline"
           size="sm"
           onClick={() => setPreviewKey(prev => prev + 1)}
-          className="cursor-pointer p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className="cursor-pointer rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 011-1zm12 1a1 1 0 011 1v5a1 1 0 11-2 0V9.9a5.002 5.002 0 00-11.601-2.566 1 1 0 01-1.885-.666A7.002 7.002 0 0115 2.101V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
+          Refresh Previews
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
