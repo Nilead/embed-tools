@@ -80,6 +80,9 @@ const App = () => {
 
   const allAnswered = answers.goal && answers.design && answers.platform;
 
+  // Helper function to check if a string contains HTML tags
+  const containsHTML = str => /<[^>]+>/.test(str);
+
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
       <div className="container mx-auto p-4 md:p-8">
@@ -195,8 +198,20 @@ const App = () => {
                     {comparisonData.rows.map(row => (
                       <tr key={row[0]} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="p-4 font-semibold">{row[0]}</td>
-                        <td className="p-4 text-gray-700">{row[1]}</td>
-                        <td className="p-4 text-gray-700">{row[2]}</td>
+                        <td className="p-4 text-gray-700">
+                          {containsHTML(row[1]) ? (
+                            <span dangerouslySetInnerHTML={{ __html: row[1] }} />
+                          ) : (
+                            row[1]
+                          )}
+                        </td>
+                        <td className="p-4 text-gray-700">
+                          {containsHTML(row[2]) ? (
+                            <span dangerouslySetInnerHTML={{ __html: row[2] }} />
+                          ) : (
+                            row[2]
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
