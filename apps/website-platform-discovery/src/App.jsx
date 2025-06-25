@@ -101,8 +101,8 @@ const App = () => {
               <div className="space-y-4">
                 {questions.goal.options.map(option => (
                   <label key={option.id} className={`flex items-start p-5 rounded-lg border-2 cursor-pointer transition-all ${answers.goal === option.id ? 'border-teal-500 bg-teal-50 shadow-md' : 'border-gray-200 hover:border-teal-300'}`}>
-                    <input type="radio" name="goal" value={option.id} className="form-radio h-5 w-5 text-teal-600 mt-1 flex-shrink-0" onChange={(e) => handleAnswerChange('goal', e.target.value)} />
-                    <span className="ml-4 text-gray-700">{option.text}</span>
+                    <input type="radio" name="goal" value={option.id} className="form-radio h-5 w-5 text-teal-600 mt-0.5 flex-shrink-0" onChange={(e) => handleAnswerChange('goal', e.target.value)} />
+                    <span className="ml-4 text-gray-700 leading-relaxed">{option.text}</span>
                   </label>
                 ))}
               </div>
@@ -115,8 +115,8 @@ const App = () => {
               <div className="space-y-4">
                 {questions.design.options.map(option => (
                   <label key={option.id} className={`flex items-start p-5 rounded-lg border-2 cursor-pointer transition-all ${answers.design === option.id ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-gray-200 hover:border-indigo-300'}`}>
-                    <input type="radio" name="design" value={option.id} className="form-radio h-5 w-5 text-indigo-600 mt-1 flex-shrink-0" onChange={(e) => handleAnswerChange('design', e.target.value)} />
-                    <span className="ml-4 text-gray-700">{option.text}</span>
+                    <input type="radio" name="design" value={option.id} className="form-radio h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0" onChange={(e) => handleAnswerChange('design', e.target.value)} />
+                    <span className="ml-4 text-gray-700 leading-relaxed">{option.text}</span>
                   </label>
                 ))}
               </div>
@@ -129,8 +129,8 @@ const App = () => {
               <div className="space-y-4">
                 {questions.platform.options.map(option => (
                   <label key={option.id} className={`flex items-start p-5 rounded-lg border-2 cursor-pointer transition-all ${answers.platform === option.id ? 'border-pink-500 bg-pink-50 shadow-md' : 'border-gray-200 hover:border-pink-300'}`}>
-                    <input type="radio" name="platform" value={option.id} className="form-radio h-5 w-5 text-pink-600 mt-1 flex-shrink-0" onChange={(e) => handleAnswerChange('platform', e.target.value)} />
-                    <span className="ml-4 text-gray-700">{option.text}</span>
+                    <input type="radio" name="platform" value={option.id} className="form-radio h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" onChange={(e) => handleAnswerChange('platform', e.target.value)} />
+                    <span className="ml-4 text-gray-700 leading-relaxed">{option.text}</span>
                   </label>
                 ))}
               </div>
